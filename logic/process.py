@@ -1,4 +1,5 @@
 import itertools
+import operator
 import numpy as np
 
 # Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
@@ -41,6 +42,36 @@ def get_optimized_range(percents):
                 else:
                     res.update({k:1})
     return res
+
+
+
+def generate_matrix(nulls, fields, qty):
+    res = []
+    if nulls:
+        null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
+        null_schema_iterator = iter(null_schema)
+    for i in range(qty):
+        row = {}
+        for field in fields:
+            # Processing nulls
+            if field['null'] and null_schema_iterator:
+                try:
+                    is_null = next(null_schema_iterator)
+                    nulls[null_schema]-=1
+                except StopIteration:
+                    null_schema = max(nulls.items(), key=operator.itemgetter(1))
+                    if null_schema[1] == 0:
+                        is_null = 0
+                        null_schema_iterator = False
+                    else:
+                        null_schema = null_schema[0]
+                        null_schema_iterator = iter(null_schema)
+                if is_null == 1:
+                    row.update({field['id']:None})
+
+
+
+
 
 
 

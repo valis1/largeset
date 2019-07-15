@@ -18,7 +18,7 @@ class SriptExpressions:
         self.res = {}
         self.regexps= {
             'min': r'min\s*=\s*[0-9]*',
-            'mgax': r'max\s*=\s*[0-9]*',
+            'max': r'max\s*=\s*[0-9]*',
             'format': r'format\s*=\s*.*',
             'qty': r'qty\s*=\s*[0-9]*',
             'type':r'type\s*=\s*ean-13|ean-8',
@@ -28,6 +28,8 @@ class SriptExpressions:
             'add' : r'lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
             'left_subtract' : r'lambda x\s*:\s*x\s*-\s*[0-9]+',
             'right_subtract': r'lambda x\s*:\s*[0-9]+\s*-\s*x',
+            'step':  r'step\s*=\s*[0-9]*',
+            'start':  r'start\s*=\s*[0-9]*',
         }
         self.__parseCode()
 
@@ -46,10 +48,10 @@ class SriptExpressions:
                     elif k=='format':
                         x = re.search(r'(%{1}[a-zA-Z]{1}[\s\.:-]*)+')
                         if x:
-                            self.res.update({k:(x.group(0),)})
+                            self.res.update({k:(x.group(0),False)})
                     else:
                         x = re.search(r'ean-13|ean-8')
-                        self.res.update({k:(x.group(0),)})
+                        self.res.update({k:(x.group(0),False)})
 
     @property
     def results(self):
@@ -99,12 +101,12 @@ class Mapper:
         }
     def get_function(self,name,params={}):
         if name == 'sequence':
-            self.__set_sequence(name,params)
+            self.__set_sequence(params)
         func = self.map.get(name)
         return func
 
-    def __set_sequence(self,name='global',params={}):
-        self.sequences.update({name:{'current':params.get('start',0),'step':params.get('step',1)}})
+    def __set_sequence(self,params={}):
+        self.sequences.update({params.get('name','global'):{'current':params.get('start',0),'step':params.get('step',1)}})
 
     def __get_sequence_item(self,field_name):
         c = self.sequences.get(field_name,'counter')
@@ -116,16 +118,47 @@ class Mapper:
 class ParsingError(Exception):
     pass
 
-# JSON Format {"language":"en|ru", "null_method":"percent_optimized|combination_optimized", "fields":[]}
+# JSON Format {"language":"en|ru", "null_method":"percent_optimized|combination_optimized", "data_len":10,"fields":[]}
 # Fields {'id':'my_field', 'type':'int', 'null':True, 'percent_nulls':'30','sctript':'a=1'}
 
 class Request:
     def __init__(self, request):
+        null_methods = {
+            'percent_optimized': 0,
+            'combination_optimized': 1
+        }
         try:
             self.data = json.loads(request)
         except json.decoder.JSONDecodeError:
             raise ParsingError('Unsupported json format')
 
         try:
+            self.null_method = null_methods[self.data['null_method']]
+        except KeyError:
+            raise ParsingError('null method must be in (percent_optimized, combination_optimized) ')
+
+        self.nulls = 0
+        self.percent_nulls = []
+
+        try:
             self.language = self.data['language']
+            self.len = int(self.data['data_len'])
+            self.fields = []
+            for i in self.data['fields']:
+                if i.get('id') and i.get('type'):
+                    self.fields.append(i)
+                    if i.get('null', False):
+                        self.nulls+=1
+                        if self.null_method == 0:
+                            self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
+
+
+                else:
+                    raise ParsingError('Field id and field type are required')
+        except KeyError:
+            raise ParsingError('Language, null method, data_len fields range are required')
+        except ValueError:
+            raise ParsingError('percent_nulls, data_len must be integers')
+
+
 
