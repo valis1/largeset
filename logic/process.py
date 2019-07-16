@@ -44,6 +44,8 @@ def get_optimized_range(percents):
     return res
 
 
+def exec_function(fn):
+
 
 def generate_matrix(nulls, fields, qty):
     res = []
@@ -68,6 +70,16 @@ def generate_matrix(nulls, fields, qty):
                         null_schema_iterator = iter(null_schema)
                 if is_null == 1:
                     row.update({field['id']:None})
+                    continue
+
+            # Processing not nulls
+            fn = field[0]
+
+            fn_str =
+
+
+
+
 
 
 

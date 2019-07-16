@@ -25,17 +25,12 @@ class LargeSetService:
         for i in request.fields:
             script = SriptExpressions(i['sctript'])
             if i['type'] == 'sequence':
-                params = {'start': script.get('start',1),'step':script.get('step',1), 'name': i['id']}
+                params = {'start': script.params.get('start',1),'step':script.params.get('step',1), 'name': i['id']}
             else:
                 params={}
 
             raw_func = mapper.get_function(i['type'],params)
-            func = {'main':raw_func[0],'mutations':[],'params':[]}
-            for k,v in script.items():
-                if k in raw_func:
-                    func['params'].append(v[0])
-                elif v[1]:
-                    func['mutations'].append(v)
+            func = {'main':raw_func,'mutations':script.functions,'params':script.params}
 
             preformated_fields.append(
                 {
@@ -44,10 +39,6 @@ class LargeSetService:
                     'null':i['null']
                 }
             )
-
-
-
-
 
 if __name__ == '__main__':
     conf = {

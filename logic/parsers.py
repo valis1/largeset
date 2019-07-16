@@ -6,56 +6,73 @@ import re
 class SriptExpressions:
 
     def __init__(self, codestring):
-        self.functions = {
-            'multipy': lambda x, y: x * y,
-            'left_devision': lambda x, y: x / y,
-            'right_devision': lambda x, y: y / x,
-            'add': lambda x, y: x + y,
-            'left_subtract': lambda x, y: x - y,
-            'right_subtract': lambda x, y: y - x
+        self.function_patterns = {
+            'lambda x: x*%s': r'lambda x\s*:\s*x|[0-9]+\s*\*\s*[0-9]+|x',
+            'lambda x: x/%s': r'lambda x\s*:\s*x\s*\\\s*[0-9]+',
+            'lambda x:%s/x': r'lambda x\s*:\s*[0-9]+\s*\\\s*x',
+            'lambda x: x+%s': r'lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
+            'lambda x:x-%s': r'lambda x\s*:\s*x\s*-\s*[0-9]+',
+            'lambda x:%s-x': r'lambda x\s*:\s*[0-9]+\s*-\s*x'
         }
         self.code = codestring.split(';')
-        self.res = {}
-        self.regexps= {
-            'min': r'min\s*=\s*[0-9]*',
-            'max': r'max\s*=\s*[0-9]*',
-            'format': r'format\s*=\s*.*',
+        self.formated_params ={}
+        self.formated_functions = []
+        self.num_params= {
+            'minimum': r'min\s*=\s*[0-9]*',
+            'minimum': r'max\s*=\s*[0-9]*',
             'qty': r'qty\s*=\s*[0-9]*',
-            'type':r'type\s*=\s*ean-13|ean-8',
-            'multiply' : r'lambda x\s*:\s*x|[0-9]+\s*\*\s*[0-9]+|x',
-            'left_devision' : r'lambda x\s*:\s*x\s*\\\s*[0-9]+',
-            'right_devision': r'lambda x\s*:\s*[0-9]+\s*\\\s*x',
-            'add' : r'lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
-            'left_subtract' : r'lambda x\s*:\s*x\s*-\s*[0-9]+',
-            'right_subtract': r'lambda x\s*:\s*[0-9]+\s*-\s*x',
             'step':  r'step\s*=\s*[0-9]*',
             'start':  r'start\s*=\s*[0-9]*',
         }
+        self.string_params = {
+            'format': r'format\s*=\s*.*',
+            'type': r'type\s*=\s*ean-13|ean-8',
+        }
+
         self.__parseCode()
+
+    def __get_num_params(self, code_string):
+        for k, v in self.num_params.items():
+            if re.match(v, code_string):
+                x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
+                if x:
+                    self.formated_params.update({k:x.group(0)})
+                    return True
+        return False
+
+    def __get_functions(self, code_string):
+        for k,v in self.function_patterns.items():
+            if re.match(v, code_string):
+                x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
+                if x:
+                    self.formated_functions.append(eval(k%x.group(0)))
+                    return True
+
+    def __get_string_params(self, code_string):
+        for k, v in self.string_params.items():
+            if re.match(v, code_string):
+                x = code_string.split('=')[1].strip()
+                self.formated_params.update({k:x})
+                return True
+        return False
+
 
     def __parseCode(self):
         for i in self.code:
-            for k, v in self.regexps.items():
-                if re.match(v, i):
-                    if k != 'format' or k!='type':
-                        x = re.search(r'[0-9]+\.[0-9]+')
-                        if x:
-                            self.res.update({k: (float(x.group(0)), self.functions.get(k, False))})
-                        else:
-                            x = re.search(r'[0-9]+')
-                            if x:
-                                self.res.update({k: (int(x.group(0)),self.functions.get(k, False))})
-                    elif k=='format':
-                        x = re.search(r'(%{1}[a-zA-Z]{1}[\s\.:-]*)+')
-                        if x:
-                            self.res.update({k:(x.group(0),False)})
-                    else:
-                        x = re.search(r'ean-13|ean-8')
-                        self.res.update({k:(x.group(0),False)})
+            if self.__get_num_params(i):
+                continue
+            elif self.__get_string_params(i):
+                continue
+            elif self.__get_functions(i):
+                continue
 
     @property
-    def results(self):
-        return self.res
+    def params(self):
+        return self.formated_params
+
+    @property
+    def functions(self):
+        return self.formated_functions
 
 
 
@@ -71,7 +88,7 @@ class Mapper:
             'longitude': (self.g.address.longitude,),
             'postal_code': (self.g.address.postal_code,),
             'company': (self.g.business.company,),
-            'price': (self.g.business.price,'min','max'),
+            'price': (self.g.business.price,{'minimum':1, 'maximum':100}),
             'datetime': (self.g.datetime.datetime, 'format'),
             'date': (self.g.datetime.date, 'format'),
             'day_of_week': (self.g.datetime.day_of_week,),
