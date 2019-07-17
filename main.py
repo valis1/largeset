@@ -24,12 +24,7 @@ class LargeSetService:
         preformated_fields = []
         for i in request.fields:
             script = SriptExpressions(i['sctript'])
-            if i['type'] == 'sequence':
-                params = {'start': script.params.get('start',1),'step':script.params.get('step',1), 'name': i['id']}
-            else:
-                params={}
-
-            raw_func = mapper.get_function(i['type'],params)
+            raw_func = mapper.get_function(i['type'], script.params)
             func = {'main':raw_func,'mutations':script.functions,'params':script.params}
 
             preformated_fields.append(

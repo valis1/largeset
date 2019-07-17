@@ -1,7 +1,9 @@
 from mimesis import Generic
+from mimesis import enums
 import json
 import uuid
 import re
+import datetime
 
 class SriptExpressions:
 
@@ -18,11 +20,12 @@ class SriptExpressions:
         self.formated_params ={}
         self.formated_functions = []
         self.num_params= {
-            'minimum': r'min\s*=\s*[0-9]*',
-            'minimum': r'max\s*=\s*[0-9]*',
+            'min': r'min\s*=\s*[0-9]*',
+            'max': r'max\s*=\s*[0-9]*',
             'qty': r'qty\s*=\s*[0-9]*',
             'step':  r'step\s*=\s*[0-9]*',
             'start':  r'start\s*=\s*[0-9]*',
+            'end': r'end\s*=\s*[0-9]*'
         }
         self.string_params = {
             'format': r'format\s*=\s*.*',
@@ -82,28 +85,25 @@ class Mapper:
         # Default global counter for sequence function
         self.sequences={'global':{'current':0, 'step':1}}
         self.map ={
-            'address': (self.g.address.address,),
-            'city': (self.g.address.city,),
-            'latitude': (self.g.address.latitude,),
-            'longitude': (self.g.address.longitude,),
-            'postal_code': (self.g.address.postal_code,),
-            'company': (self.g.business.company,),
-            'price': (self.g.business.price,{'minimum':1, 'maximum':100}),
-            'datetime': (self.g.datetime.datetime, 'format'),
-            'date': (self.g.datetime.date, 'format'),
-            'day_of_week': (self.g.datetime.day_of_week,),
-            'timestamp': (self.g.datetime.timestamp,),
-            'dish': (self.g.food.dish, ),
-            'drink': (self.g.food.drink,),
-            'fruit': (self.g.food.fruit,),
-            'vegetable': (self.g.food.vegetable,),
-            'email': (self.g.person.email,),
-            'full_name': (self.g.person.full_name,),
-            'job': (self.g.person.occupation,),
-            'phone': (self.g.person.telephone,),
-            'username': (self.g.person.username,),
-            'text': (self.g.text.text,),
-            'title': (self.g.text.title, ),
+            'address': self.g.address.address,
+            'city': self.g.address.city,
+            'latitude': self.g.address.latitude,
+            'longitude': self.g.address.longitude,
+            'postal_code': self.g.address.postal_code,
+            'company': self.g.business.company,
+            'day_of_week': self.g.datetime.day_of_week,
+            'timestamp': self.g.datetime.timestamp,
+            'dish': self.g.food.dish,
+            'drink': self.g.food.drink,
+            'fruit': self.g.food.fruit,
+            'vegetable': self.g.food.vegetable,
+            'email': self.g.person.email,
+            'full_name': self.g.person.full_name,
+            'job': self.g.person.occupation,
+            'phone': self.g.person.telephone,
+            'username': self.g.person.username,
+            'text': self.g.text.text,
+            'title': self.g.text.title,
             'ean_code': (self.g.code.ean,'type'),
             'uuid': (uuid.uuid4,),
             'file_name': (self.g.file.file_name,),
@@ -119,8 +119,25 @@ class Mapper:
     def get_function(self,name,params={}):
         if name == 'sequence':
             self.__set_sequence(params)
-        func = self.map.get(name)
-        return func
+        func = self.map.get(name, False)
+        if func:
+            return func
+        elif name == 'price':
+            kw = {'minimum':params.get('min', 1), 'maximum':params.get('max',1)}
+            return lambda : self.g.business.price(**kw)
+        elif name == 'datetime':
+            kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
+            return lambda : datetime.datetime.strftime(params.get('format','%c'), self.g.datetime.datetime(**kw))
+        elif name == 'date':
+            kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
+            return lambda : datetime.datetime.strftime(params.get('format','%c'), self.g.datetime.date(**kw))
+        elif name == 'ean_code':
+            if params.get('type', 'ean-13'):
+                return lambda : self.g.code.ean(enums.EANFormat.EAN13)
+            else:
+                return lambda : self.g.code.ean(enums.EANFormat.EAN8)
+
+
 
     def __set_sequence(self,params={}):
         self.sequences.update({params.get('name','global'):{'current':params.get('start',0),'step':params.get('step',1)}})

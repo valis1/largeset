@@ -44,10 +44,9 @@ def get_optimized_range(percents):
     return res
 
 
-def exec_function(fn):
 
 
-def generate_matrix(nulls, fields, qty):
+def generate_matrix(nulls, fields, qty, mapper):
     res = []
     if nulls:
         null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
@@ -73,7 +72,7 @@ def generate_matrix(nulls, fields, qty):
                     continue
 
             # Processing not nulls
-            fn = field[0]
+            fn = field['func'][0]
 
             fn_str =
 
