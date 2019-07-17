@@ -46,7 +46,7 @@ def get_optimized_range(percents):
 
 
 
-def generate_matrix(nulls, fields, qty, mapper):
+def generate_matrix(nulls, fields, qty):
     res = []
     if nulls:
         null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
@@ -69,13 +69,14 @@ def generate_matrix(nulls, fields, qty, mapper):
                         null_schema_iterator = iter(null_schema)
                 if is_null == 1:
                     row.update({field['id']:None})
-                    continue
-
-            # Processing not nulls
-            fn = field['func'][0]
-
-            fn_str =
-
+            else:
+            # Processing not null
+                vl = field['func']()
+                for i in field['mutations']:
+                    v1 = i(vl)
+                row.update({field['id']:vl})
+        res.append(row)
+    return res
 
 
 

@@ -4,6 +4,7 @@ import json
 import uuid
 import re
 import datetime
+import random
 
 class SriptExpressions:
 
@@ -25,7 +26,8 @@ class SriptExpressions:
             'qty': r'qty\s*=\s*[0-9]*',
             'step':  r'step\s*=\s*[0-9]*',
             'start':  r'start\s*=\s*[0-9]*',
-            'end': r'end\s*=\s*[0-9]*'
+            'end': r'end\s*=\s*[0-9]*',
+            'round': r'round\s*=\s*[0-9]*'
         }
         self.string_params = {
             'format': r'format\s*=\s*.*',
@@ -104,26 +106,22 @@ class Mapper:
             'username': self.g.person.username,
             'text': self.g.text.text,
             'title': self.g.text.title,
-            'ean_code': (self.g.code.ean,'type'),
-            'uuid': (uuid.uuid4,),
-            'file_name': (self.g.file.file_name,),
-            'url_home': (self.g.internet.home_page,),
-            'mac': (self.g.internet.mac_address,),
-            'ip': (self.g.internet.ip_v4,),
-            'digit_range': (self.g.numbers.between,'min', 'max'),
-            'float': (self.__get_float, 'min', 'max'),
-            'int': (self.__get_int, 'min', 'max'),
-            'car_model': (self.g.transport.car, ),
-            'sequence':(self.__get_sequence_item,'field_name')
+            'uuid': uuid.uuid4,
+            'file_name': self.g.file.file_name,
+            'url_home': self.g.internet.home_page,
+            'mac': self.g.internet.mac_address,
+            'ip': self.g.internet.ip_v4,
+            'car_model': self.g.transport.car,
         }
-    def get_function(self,name,params={}):
+
+    def get_function(self,name,field_id,params={}):
         if name == 'sequence':
             self.__set_sequence(params)
         func = self.map.get(name, False)
         if func:
             return func
         elif name == 'price':
-            kw = {'minimum':params.get('min', 1), 'maximum':params.get('max',1)}
+            kw = {'minimum':params.get('min', 1), 'maximum':params.get('max',100)}
             return lambda : self.g.business.price(**kw)
         elif name == 'datetime':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
@@ -136,8 +134,17 @@ class Mapper:
                 return lambda : self.g.code.ean(enums.EANFormat.EAN13)
             else:
                 return lambda : self.g.code.ean(enums.EANFormat.EAN8)
+        elif name == 'int':
+            kw = {'minimum':params.get('min', 1), 'maximum':params.get('max',100)}
+            return lambda : self.g.numbers.between(**kw)
+        elif name == 'float':
+            kw = {'minimum': params.get('min', 1), 'maximum': params.get('max',100), 'round_param': params.get('round',2)}
+            return lambda : self.__gen_float(**kw)
+        elif name == 'sequence':
+            return lambda : self.__get_sequence_item(field_id)
 
-
+    def __gen_float(self, minimum=1, maximum=100, round_param=2):
+        return round(random.uniform(minimum, maximum), round_param)
 
     def __set_sequence(self,params={}):
         self.sequences.update({params.get('name','global'):{'current':params.get('start',0),'step':params.get('step',1)}})

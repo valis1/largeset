@@ -1,7 +1,7 @@
 import cherrypy
 import json
 from  logic.parsers import SriptExpressions, Mapper, Request, ParsingError
-from  logic.process import get_range, get_optimized_range
+from  logic.process import get_range, get_optimized_range, generate_matrix
 import time
 
 
@@ -16,6 +16,7 @@ class LargeSetService:
             cherrypy.response.status = 400
             return json.dumps({'error_desc':str(e)})
         mapper = Mapper(request.language)
+        nulls =[]
         if request.nulls > 0:
             if request.null_method == 0:
                 nulls = get_optimized_range(request.percent_nulls)
@@ -24,16 +25,17 @@ class LargeSetService:
         preformated_fields = []
         for i in request.fields:
             script = SriptExpressions(i['sctript'])
-            raw_func = mapper.get_function(i['type'], script.params)
-            func = {'main':raw_func,'mutations':script.functions,'params':script.params}
-
+            raw_func = mapper.get_function(i['type'], i['id'], script.params)
             preformated_fields.append(
                 {
                     'id': i['id'],
-                    'func': func,
-                    'null':i['null']
+                    'func': raw_func,
+                    'null':i['null'],
+                    'mutations':script.functions
                 }
             )
+        result = generate_matrix(nulls, preformated_fields, request.len)
+        return json.dumps({'data':result})
 
 if __name__ == '__main__':
     conf = {
