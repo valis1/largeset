@@ -22,6 +22,7 @@ class LargeSetService:
                 nulls = get_optimized_range(request.percent_nulls)
             else:
                 nulls = get_range(request.nulls,request.len)
+
         preformated_fields = []
         for i in request.fields:
             script = SriptExpressions(i['sctript'])
@@ -34,13 +35,26 @@ class LargeSetService:
                     'mutations':script.functions
                 }
             )
-        result = generate_matrix(nulls, preformated_fields, request.len)
-        return json.dumps({'data':result})
-
+        try:
+            result = generate_matrix(nulls, preformated_fields, request.len)
+            return json.dumps({'data': result})
+        except Exception as e:
+            print(e)
+        return json.dumps({'data':[]})
 if __name__ == '__main__':
     conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
-        }
+        },
+        'global': {
+            'server.socket_host': '127.0.0.1',
+            'server.socket_port': 8080,
+            'server.thread_pool': 4,
+            'server.shutdown_timeout': 1
+        },
     }
-    cherrypy.quickstart(LargeSetService(), '/', conf)
+    cherrypy.tree.mount(LargeSetService(), '/', conf)
+    cherrypy.engine.signals.subscribe()
+    cherrypy.engine.start()
+    cherrypy.engine.block()
+

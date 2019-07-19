@@ -39,10 +39,16 @@ class SriptExpressions:
     def __get_num_params(self, code_string):
         for k, v in self.num_params.items():
             if re.match(v, code_string):
-                x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
+                x = re.search(r'[0-9]+\.[0-9]+', code_string)
                 if x:
-                    self.formated_params.update({k:x.group(0)})
+                    self.formated_params.update({k:float(x.group(0))})
                     return True
+                else:
+                    x = re.search(r'[0-9]+', code_string)
+                    if x:
+                        self.formated_params.update({k: int(x.group(0))})
+                        return True
+
         return False
 
     def __get_functions(self, code_string):
@@ -106,7 +112,7 @@ class Mapper:
             'username': self.g.person.username,
             'text': self.g.text.text,
             'title': self.g.text.title,
-            'uuid': uuid.uuid4,
+            'uuid': lambda : str(uuid.uuid4()),
             'file_name': self.g.file.file_name,
             'url_home': self.g.internet.home_page,
             'mac': self.g.internet.mac_address,
@@ -125,10 +131,10 @@ class Mapper:
             return lambda : self.g.business.price(**kw)
         elif name == 'datetime':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
-            return lambda : datetime.datetime.strftime(params.get('format','%c'), self.g.datetime.datetime(**kw))
+            return lambda : self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'date':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
-            return lambda : datetime.datetime.strftime(params.get('format','%c'), self.g.datetime.date(**kw))
+            return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'ean_code':
             if params.get('type', 'ean-13'):
                 return lambda : self.g.code.ean(enums.EANFormat.EAN13)
