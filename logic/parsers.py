@@ -120,6 +120,7 @@ class Mapper:
         }
 
     def get_function(self,name,field_id,params={}):
+        print(params)
         if name == 'sequence':
             self.__set_sequence(params)
         func = self.map.get(name, False)
