@@ -68,7 +68,9 @@ class SriptExpressions:
 
 
     def __parseCode(self):
+        print(self.code)
         for i in self.code:
+
             if self.__get_num_params(i):
                 continue
             elif self.__get_string_params(i):
