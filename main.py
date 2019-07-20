@@ -35,12 +35,8 @@ class LargeSetService:
                     'mutations':script.functions
                 }
             )
-        try:
-            result = generate_matrix(nulls, preformated_fields, request.len)
-            return json.dumps({'data': result})
-        except Exception as e:
-            print(e)
-        return json.dumps({'data':[]})
+        result = generate_matrix(nulls, preformated_fields, request.len)
+        return json.dumps({'data': result})
 conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),

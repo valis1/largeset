@@ -9,12 +9,12 @@ class SriptExpressions:
 
     def __init__(self, codestring):
         self.function_patterns = {
-            'lambda x: x*%s': r'lambda x\s*:\s*x|[0-9]+\s*\*\s*[0-9]+|x',
-            'lambda x: x/%s': r'lambda x\s*:\s*x\s*\\\s*[0-9]+',
-            'lambda x:%s/x': r'lambda x\s*:\s*[0-9]+\s*\\\s*x',
-            'lambda x: x+%s': r'lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
-            'lambda x:x-%s': r'lambda x\s*:\s*x\s*-\s*[0-9]+',
-            'lambda x:%s-x': r'lambda x\s*:\s*[0-9]+\s*-\s*x'
+            'lambda x: x*%s': r'\s*lambda x\s*:\s*(x|[0-9]+)\s*\*{1}\s*[0-9]+|x',
+            'lambda x: x/%s': r'\s*lambda x\s*:\s*x\s*/\s*[0-9]+',
+            'lambda x:%s/x': r'\s*lambda x\s*:\s*[0-9]+\s*/\s*x',
+            'lambda x: x+%s': r'\s*lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
+            'lambda x:x-%s': r'\s*lambda x\s*:\s*x\s*-\s*[0-9]+',
+            'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x'
         }
         self.code = codestring.split(';')
         self.formated_params ={}
@@ -29,8 +29,8 @@ class SriptExpressions:
             'round': r'\s*round\s*=\s*[0-9]*'
         }
         self.string_params = {
-            'format': r'format\s*=\s*.*',
-            'type': r'type\s*=\s*ean-13|ean-8',
+            'format': r'\s*format\s*=\s*.*',
+            'type': r'\s*type\s*=\s*ean-13|ean-8',
         }
 
         self.__parseCode()
@@ -121,7 +121,6 @@ class Mapper:
         }
 
     def get_function(self,name,field_id,params={}):
-        print(params)
         if name == 'sequence':
             self.__set_sequence(params)
         func = self.map.get(name, False)

@@ -48,8 +48,8 @@ def generate_matrix(nulls, fields, qty):
     if nulls:
         null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
         null_schema_iterator = iter(null_schema)
-    i = 0
-    while i<qty:
+    l_count = 0
+    while l_count<qty:
         row = {}
         for field in fields:
             # Processing nulls
@@ -72,9 +72,9 @@ def generate_matrix(nulls, fields, qty):
                 fnc = field['func']
                 val=fnc()
                 for i in field['mutations']:
-                    v = i(val)
+                    val = i(val)
                 row.update({field['id']:val})
-        i+=1
+        l_count+=1
         res.append(row)
     return res
 
