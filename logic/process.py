@@ -1,7 +1,7 @@
 import itertools
 import operator
 import numpy as np
-import time
+
 # Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
 def get_range(num, qty):
     combinations = list(itertools.product([1,0], repeat=num))

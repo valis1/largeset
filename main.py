@@ -1,8 +1,7 @@
 import cherrypy
 import json
-from  logic.parsers import SriptExpressions, Mapper, Request, ParsingError
-from  logic.process import get_range, get_optimized_range, generate_matrix
-import time
+from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
+from logic.process import get_range, get_optimized_range, generate_matrix
 
 
 @cherrypy.expose
