@@ -1,7 +1,7 @@
 import itertools
 import operator
 import numpy as np
-
+import time
 # Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
 def get_range(num, qty):
     combinations = list(itertools.product([1,0], repeat=num))
@@ -43,16 +43,13 @@ def get_optimized_range(percents):
                     res.update({k:1})
     return res
 
-
-
-
 def generate_matrix(nulls, fields, qty):
-    times={}
     res = []
     if nulls:
         null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
         null_schema_iterator = iter(null_schema)
-    for i in range(qty):
+    i = 0
+    while i<qty:
         row = {}
         for field in fields:
             # Processing nulls
@@ -72,10 +69,12 @@ def generate_matrix(nulls, fields, qty):
                     row.update({field['id']:None})
             else:
             # Processing not null
-                vl = field['func']()
+                fnc = field['func']
+                val=fnc()
                 for i in field['mutations']:
-                    v1 = i(vl)
-                row.update({field['id']:vl})
+                    v = i(val)
+                row.update({field['id']:val})
+        i+=1
         res.append(row)
     return res
 

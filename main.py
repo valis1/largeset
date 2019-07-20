@@ -41,20 +41,15 @@ class LargeSetService:
         except Exception as e:
             print(e)
         return json.dumps({'data':[]})
-if __name__ == '__main__':
-    conf = {
+conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
         },
         'global': {
-            'server.socket_host': '127.0.0.1',
-            'server.socket_port': 8080,
-            'server.thread_pool': 4,
-            'server.shutdown_timeout': 1
+            'engine.autoreload.on': False
         },
     }
-    cherrypy.tree.mount(LargeSetService(), '/', conf)
-    cherrypy.engine.signals.subscribe()
-    cherrypy.engine.start()
-    cherrypy.engine.block()
+cherrypy.server.unsubscribe()
+cherrypy.engine.start()
+app = cherrypy.tree.mount(LargeSetService(), '/', conf)
 
