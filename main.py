@@ -1,4 +1,5 @@
 import cherrypy
+import os
 import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, get_optimized_range, generate_matrix
@@ -48,7 +49,13 @@ conf = {
             'engine.autoreload.on': False
         },
     }
-cherrypy.server.unsubscribe()
-cherrypy.engine.start()
-app = cherrypy.tree.mount(LargeSetService(), '/', conf)
+if os.getenv('PROD'):
+    cherrypy.server.unsubscribe()
+    cherrypy.engine.start()
+    app = cherrypy.tree.mount(LargeSetService(), '/', conf)
+else:
+    cherrypy.tree.mount(LargeSetService(), '/', conf)
+    cherrypy.engine.signals.subscribe()
+    cherrypy.engine.start()
+    cherrypy.engine.block()
 

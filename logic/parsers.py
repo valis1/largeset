@@ -20,13 +20,13 @@ class SriptExpressions:
         self.formated_params ={}
         self.formated_functions = []
         self.num_params= {
-            'min': r'min\s*=\s*[0-9]*',
-            'max': r'max\s*=\s*[0-9]*',
-            'qty': r'qty\s*=\s*[0-9]*',
-            'step':  r'step\s*=\s*[0-9]*',
-            'start':  r'start\s*=\s*[0-9]*',
-            'end': r'end\s*=\s*[0-9]*',
-            'round': r'round\s*=\s*[0-9]*'
+            'min': r'\s*min\s*=\s*[0-9]*',
+            'max': r'\s*max\s*=\s*[0-9]*',
+            'qty': r'\s*qty\s*=\s*[0-9]*',
+            'step':  r'\s*step\s*=\s*[0-9]*',
+            'start':  r'\s*start\s*=\s*[0-9]*',
+            'end': r'\s*end\s*=\s*[0-9]*',
+            'round': r'\s*round\s*=\s*[0-9]*'
         }
         self.string_params = {
             'format': r'format\s*=\s*.*',
@@ -68,7 +68,6 @@ class SriptExpressions:
 
 
     def __parseCode(self):
-        print(self.code)
         for i in self.code:
 
             if self.__get_num_params(i):
