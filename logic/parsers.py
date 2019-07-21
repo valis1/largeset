@@ -31,7 +31,7 @@ class SriptExpressions:
         }
         self.string_params = {
             'format': r'\s*format\s*=\s*.*',
-            'type': r'\s*type\s*=\s*ean-13|ean-8',
+            'type': r'\s*type\s*=\s*(ean-13|ean-8)\s*',
         }
 
         self.__parseCode()
@@ -137,7 +137,7 @@ class Mapper:
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'ean_code':
-            if params.get('type', 'ean-13'):
+            if params.get('type', 'ean-13')=='ean-13':
                 return lambda : self.g.code.ean(enums.EANFormat.EAN13)
             else:
                 return lambda : self.g.code.ean(enums.EANFormat.EAN8)
