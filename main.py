@@ -10,6 +10,7 @@ class LargeSetService:
     @cherrypy.tools.accept(media='application/json')
     def POST(self):
         rawData = cherrypy.request.body.read(int(cherrypy.request.headers['Content-Length']))
+
         try:
             request = Request(rawData)
         except ParsingError as e:
@@ -36,7 +37,7 @@ class LargeSetService:
                 }
             )
         result = generate_matrix(nulls, preformated_fields, request.len)
-        return json.dumps({'data': result})
+        return json.dumps({'data': result}, ensure_ascii=False)
 conf = {
         '/': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),

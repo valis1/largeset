@@ -8,13 +8,14 @@ import random
 class SriptExpressions:
 
     def __init__(self, codestring):
+        #ToDo Upper and Lower  functions
         self.function_patterns = {
             'lambda x: x*%s': r'\s*lambda x\s*:\s*(x|[0-9]+)\s*\*{1}\s*[0-9]+|x',
             'lambda x: x/%s': r'\s*lambda x\s*:\s*x\s*/\s*[0-9]+',
             'lambda x:%s/x': r'\s*lambda x\s*:\s*[0-9]+\s*/\s*x',
             'lambda x: x+%s': r'\s*lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
             'lambda x:x-%s': r'\s*lambda x\s*:\s*x\s*-\s*[0-9]+',
-            'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x'
+            'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x',
         }
         self.code = codestring.split(';')
         self.formated_params ={}
@@ -120,7 +121,7 @@ class Mapper:
             'car_model': self.g.transport.car,
         }
 
-    def get_function(self,name,field_id,params={}):
+    def get_function(self,name, field_id ,params={}):
         if name == 'sequence':
             self.__set_sequence(params)
         func = self.map.get(name, False)
@@ -148,6 +149,7 @@ class Mapper:
             return lambda : self.__gen_float(**kw)
         elif name == 'sequence':
             return lambda : self.__get_sequence_item(field_id)
+
 
     def __gen_float(self, minimum=1, maximum=100, round_param=2):
         return round(random.uniform(minimum, maximum), round_param)

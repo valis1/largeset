@@ -71,6 +71,7 @@ def generate_matrix(nulls, fields, qty):
             # Processing not null
                 fnc = field['func']
                 val=fnc()
+            #ToDo Do not mutate if result is not numeric or date
                 for i in field['mutations']:
                     val = i(val)
                 row.update({field['id']:val})
