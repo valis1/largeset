@@ -27,7 +27,6 @@ class LargeSetService:
         preformated_fields = []
         for i in request.fields:
             script = SriptExpressions(i['sctript'])
-            print(script.params)
             raw_func = mapper.get_function(i['type'], i['id'], script.params)
             preformated_fields.append(
                 {

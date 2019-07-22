@@ -123,7 +123,7 @@ class Mapper:
 
     def get_function(self,name, field_id ,params={}):
         if name == 'sequence':
-            self.__set_sequence(params)
+            self.__set_sequence(field_id,params=params)
         func = self.map.get(name, False)
         if func:
             return func
@@ -154,15 +154,17 @@ class Mapper:
     def __gen_float(self, minimum=1, maximum=100, round_param=2):
         return round(random.uniform(minimum, maximum), round_param)
 
-    def __set_sequence(self,params={}):
-        self.sequences.update({params.get('name','global'):{'current':params.get('start',0),'step':params.get('step',1)}})
+    def __set_sequence(self,field_id,params={},):
+        self.sequences.update({field_id:{'current':params.get('start',0),'step':params.get('step',1)}})
 
     def __get_sequence_item(self,field_name):
-        c = self.sequences.get(field_name,'counter')
-        x = c['current']
-        step = c['step']
-        self.sequences.update({field_name:{'current':x+step,'step':step}})
-        return x
+        c = self.sequences.get(field_name, False)
+        if c:
+            x = c['current']
+            step = c['step']
+            self.sequences.update({field_name:{'current':x+step,'step':step}})
+            return x
+        return 0
 
 class ParsingError(Exception):
     pass
