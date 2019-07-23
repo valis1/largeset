@@ -132,7 +132,7 @@ class Mapper:
             return lambda : self.g.business.price(**kw)
         elif name == 'datetime':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
-            return lambda : self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
+            return lambda : self.g.datetime.datetime(**kw).strftime(params.get('format', '%c'))
         elif name == 'date':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
