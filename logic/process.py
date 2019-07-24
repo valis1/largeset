@@ -66,7 +66,14 @@ def generate_matrix(nulls, fields, qty):
                         null_schema = null_schema[0]
                         null_schema_iterator = iter(null_schema)
                 if is_null == 1:
-                    row.update({field['id']:None})
+                    row.update({field['id']: None})
+                else:
+                    fnc = field['func']
+                    val = fnc()
+                    # ToDo Do not mutate if result is not numeric or date
+                    for i in field['mutations']:
+                        val = i(val)
+                    row.update({field['id']: val})
             else:
             # Processing not null
                 fnc = field['func']
