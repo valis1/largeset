@@ -3,7 +3,18 @@ import os
 import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, get_optimized_range, generate_matrix
+from  logic.ui_data import get_field_types
 
+
+class LargeSetUI(object):
+    @cherrypy.expose
+    def index(self):
+        return open('static/index.html', encoding='utf-8')
+
+    @cherrypy.expose
+    def fields(self):
+        res = get_field_types()
+        return json.dumps(res)
 
 @cherrypy.expose
 class LargeSetService:
@@ -38,21 +49,30 @@ class LargeSetService:
             )
         result = generate_matrix(nulls, preformated_fields, request.len)
         return json.dumps({'data': result}, ensure_ascii=False)
+
 conf = {
         '/': {
+            'tools.sessions.on': True,
+            'tools.staticdir.root': os.path.abspath(os.getcwd())
+        },
+        '/service': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
         },
         'global': {
             'engine.autoreload.on': False
         },
+        '/static': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': './static'
+        }
+
     }
 if os.getenv('PROD'):
     cherrypy.server.unsubscribe()
     cherrypy.engine.start()
     app = cherrypy.tree.mount(LargeSetService(), '/', conf)
 else:
-    cherrypy.tree.mount(LargeSetService(), '/', conf)
-    cherrypy.engine.signals.subscribe()
-    cherrypy.engine.start()
-    cherrypy.engine.block()
+    app = LargeSetUI()
+    app.service = LargeSetService()
+    cherrypy.quickstart(app, '/', conf)
 

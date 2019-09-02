@@ -45,6 +45,8 @@ def get_optimized_range(percents):
 
 def generate_matrix(nulls, fields, qty):
     res = []
+    null_schema_iterator = None
+    null_schema = None
     if nulls:
         null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
         null_schema_iterator = iter(null_schema)

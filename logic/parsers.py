@@ -121,7 +121,7 @@ class Mapper:
             'car_model': self.g.transport.car,
         }
 
-    def get_function(self,name, field_id ,params={}):
+    def get_function(self,name, field_id, params={}):
         if name == 'sequence':
             self.__set_sequence(field_id,params=params)
         func = self.map.get(name, False)
@@ -197,9 +197,11 @@ class Request:
             self.fields = []
             for i in self.data['fields']:
                 if i.get('id') and i.get('type'):
+                    if i.get('percent_nulls') == 0:
+                        i['null'] = False
                     self.fields.append(i)
                     if i.get('null', False):
-                        self.nulls+=1
+                        self.nulls += 1
                         if self.null_method == 0:
                             self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
 
