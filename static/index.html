@@ -15,25 +15,28 @@
       </div>
     </div>
   </header>
-  <div class="container">
+  <div class="container m-1">
       <div class="row">
-          <section class="col-8">
+          <section class="col">
               <header>
-              <h1> Заполните форму</h1>
               </header>
+              <div class="card">
+              <div class="card-header bg-light m-1">
+                  Для генерации тестовых данных заполните форму:
+              </div>
+              <div class="card-body mt-0"> 
               <form>
               <div class = "row">
               <div class ="col">
-                  Метод заполнения нулов
-                  <select v-model="main_form.null_method">
-                       <option v-bind:value="'percent_optimized'">Оптимизировать комбинации под % от количества</option>
-                       <option v-bind:value="'combination_optimized'">Покрыть максимальное количество комбинаций</option>
+                  <select v-model="main_form.null_method" class="form-control">
+                       <option v-bind:value="'percent_optimized'">Заполнять нулами указанный % полей (покрывая все возможные комбинации)</option>
+                       <option v-bind:value="'combination_optimized'">Покрыть Is Null поля максимальным множеством комбинаций (быстрее)</option>
                   </select>
               </div>
               </div>
 
               <div class = "row">
-             <table class="table">
+             <table class="table mt-1">
                  <thead>
                      <tr>
                          <th scope="col">Field Name</th>
@@ -63,13 +66,13 @@
                           </td>
                           <td>
                           <input v-show="main_form.null_method=='percent_optimized'"
-                                     type='number' v-model='field.percent_nulls'>
+                                     type='number' v-model='field.percent_nulls' class="percent-input">
                           <input v-show="main_form.null_method=='combination_optimized'"
                                      true-value=true false-value= false
                                      type='checkbox' v-model='field.null'>
                           </td>
                           <td>
-                          <input type='text' v-model='field.sctript' size='30' >
+                          <input type='text' v-model='field.sctript' size='35' >
                           </td>
                           <td>
                           <button type="button" class="btn btn-light" v-on:click='del_row(key)'>
@@ -85,18 +88,47 @@
               <button type="button" class="btn btn-outline-info" v-on:click="add_row">
               New Line <i class="fas fa-plus"></i>
               </button>
-              <button type="button" class="btn btn-outline-info" v-on:click="get_data">
-              New Line </button>
               </div>
               </div>
+              <div class="row mt-4 ml-1">
+                     <label for="language" class="col-form-label" >#Language :</label>
+                     <div class='col'>
+                  <select v-model="main_form.language" class="form-control form-control-sm" id='language'>
+                       <option v-bind:value="'en'">English</option>
+                       <option v-bind:value="'ru'">Russian</option>
+                  </select>
+                     </div>
+                     <label for="inputdatalen" class='col-form-label' >Rows :</label>
+                     <div class='col'>
+                         <input type="text" class="form-control form-control-sm count-input" id="inputdatalen" v-model='main_form.data_len'>
+                     </div>
+              </div>
+               <div class="row mt-4 ml-1">
+                     <label for="formatselect" >#Output Format:</label>
+                     <div class='col'>
+                  <select v-model="file_type" class="form-control form-control-sm" id ="formatselect">
+                       <option v-bind:value="'text'">Text</option>
+                       <option v-bind:value="'sql'">SQL</option>
+                  </select>
+                     </div>
+                     <label for="delimiterinput" >Delimiter :</label>
+                     <div class='col'>
+                         <input type="text"  id="delimiterinput" v-model='delimiter' class='form-control'>
+                     </div>
+                     <label for="headercheck" >Include Header :</label>
+                     <div class='col'>
+                         <input type="checkbox"  id="headercheck" class = 'big-checkbox' v-model='header'  true-value=true false-value= false>
+                     </div>
+              </div>
+              <button type="button" class="btn btn-primary btn-lg btn-block ml-1 mt-4">Process Data</button>
+            </div> 
               </form>
+           </div>
+           </div>
           </section>
-          <aside class="col">
-  <!-- use the modal component, pass in the prop -->
-  <modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'>
-           Здесь будет консо
+          <aside class="col-sm-3"> 
+               d
           </aside>
-
       </div>
   </div>
 </div>

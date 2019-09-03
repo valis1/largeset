@@ -1,7 +1,14 @@
-input[type=number]{
+.percent-input{
     width: 50px;
     height: 30px;
 } 
+
+.count-input {
+    width: 120px;
+
+}
+
+.big-checkbox {width: 18px; height: 18px;}
 
 input[type=text]{
     height: 30px;
