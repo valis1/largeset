@@ -11,6 +11,9 @@ var app = new Vue({
         filtered_items:[],
         current_editable_model: {},
         showModal:false,
+        data_processed:false,
+        success_request_allert: false,
+        request_time: 1,
         file_type: 'text',
         delimiter: ';',
         header: true,
@@ -45,6 +48,9 @@ var app = new Vue({
             this.current_editable_model = model;
             this.showModal = true;
         },
+        close_allert(){
+           this.success_request_allert = false;
+        },
         type_select_event(value, script){
             this.current_editable_model.type = value;
             this.current_editable_model.sctript = script;
@@ -53,11 +59,14 @@ var app = new Vue({
         },
         get_data(){
             let xhr = new XMLHttpRequest();
-            xhr.open('POST','http://127.0.0.1:8080/service/',true);
+            this.data_processed = true;
+            start_time = new Date().getTime()
+            xhr.open('POST','/service/',true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify(this.main_form));
             xhr.onreadystatechange =() => {
                 if (xhr.readyState == 4) {
+                    this.data_processed = false;
                     if (xhr.status != 200) {
                         alert( xhr.status + ': ' + xhr.statusText ); 
                       } else {
@@ -65,12 +74,14 @@ var app = new Vue({
                           let file_type;
                           if (this.file_type == 'text') {
                               blob = to_csv(xhr.responseText, this.header, this.delimiter);
-                              file_type='.csv'
+                              file_type='.csv';
                           }
                           if (blob){
                             let link = document.createElement('a');
                             link.href  = window.URL.createObjectURL(blob);
                             link.download = 'results' + file_type
+                            this.request_time = new Date().getTime() - start_time
+                            this.success_request_allert = true;
                             link.click();
                           }
                           else {
@@ -83,7 +94,7 @@ var app = new Vue({
     },
     created: function(){
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://127.0.0.1:8080/fields', true)
+        xhr.open('GET', '/fields', true)
         xhr.send()
         xhr.onreadystatechange = () => {
             if (xhr.readyState == 4) {

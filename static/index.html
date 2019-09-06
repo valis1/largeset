@@ -9,19 +9,23 @@
 </head>
 <main id="app">
   <header>
-    <div class="navbar navbar-default">
-      <div class="navbar-header">
-        <h1>{...} Largeset - Fake Data Geterator</h1>
-      </div>
+    <div class="navbar  alert-success">
+      <span class="navbar-brand">
+      <img src="static/brand.png" width="60" height="30" alt="" class="d-inline-block align-top" >
+      Largeset - Fake data generator
+       </span>
+       <span class="navbar-text">
+        v. 0.2 (alpha)
+    </span>
     </div>
   </header>
+    
     <section class="row">
      <div class='col-8'>
-      <article class="card">
+      <article class="card ml-2 mt-2">
          <div class="card-header bg-light m-1">
           Для генерации тестовых данных заполните форму:
           </div>
-
           <div class="card-body mt-0"> 
             <form>
               <div class = "row">
@@ -127,33 +131,120 @@
                          <input type="checkbox"  id="headercheck" class = 'big-checkbox' v-model='header'  true-value=true false-value= false>
                      </div>
               </div>
-              <button type="button" class="btn btn-primary btn-lg btn-block ml-1 mt-4">Process Data</button>
+              <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='success_request_allert'>
+               Данные успещно сгенерированы. Время ответа: {{request_time}} ms
+                <button type="button" class="close" @click='close_allert'>
+                   <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+              <button type="button" class="btn btn-primary btn-lg btn-block ml-1 mt-4" v-on:click='get_data()'>Process Data</button>
             </form>
         </article> 
         </div>
         <div class='col-4'>
-        <div class="alert alert-success" role="alert">
-  <h4 class="alert-heading">Генератор тестовых данных</h4>
-     <p>Описание тестовых данных задается в основной форме.</p>
+        <div class="alert alert-success m-2" role="alert">
+  <h4 class="alert-heading">FAQ</h4>
+     <p>Описание тестовых данных задается в основной форме. Где:</p>
+      <a  data-toggle="collapse" href="#collapse0"
+      role="button" aria-expanded="false" aria-controls="collapse0">
+      Метод заполнения нулами <i class="fas fa-sort-down"></i>
+     </a>
+     <div class="collapse" id="collapse0">
+     <ul>
+         <li>Определяет как во множестве генерируемых данных будут проставлены null значения</li>
+         <li> Значение null проставляется только если поле может быть null</li>
+         <li> Если полей несколько то оба метода пытаются подобрать оптимальное число null/not null комбинаций</li>
+         <li> Метод <strong> Заполнять нулами % полей</strong>
+           <ul>
+              <li>Поле может быть null только если значение "% of nulls" > 0</li>
+              <li> Сначала генерируются все возможные варианты комбинаций null/not null</li>
+              <li> После согласно "весу" для комбинации подбирается количество полей, которое может быть заполнено согласно указанной процентной доли</li>
+              <li> Чем больше нулов в комбинации тем выше ее вес</li>
+              <li> Метод тяжелый и не рекомендуем для большого количества  полей, по которым возможен null</li>
+           </ul>
+         </li>
+         <li> Метод <strong>Покрыть is null поля максимальным количеством комбинаций</strong>
+            <ul>
+              <li> Поле считается null если установлена галочка is null</li>
+              <li> Если полей is null несколько генерируются все возможные комбинации null/not null</li>
+              <li> При генерации данных покрываются все либо максимальное количество комбинаций </li>
+            </ul>
+
+
+     </ul>
+     </div>
+     <p>
+     <a  data-toggle="collapse" href="#collapse1"
+      role="button" aria-expanded="false" aria-controls="collapse1">
+      Custom Script - синтаксис и методы <i class="fas fa-sort-down"></i>
+     </a>
+     </p>
+     <div class="collapse" id="collapse1">
+        <ul>
+          <li> Выражения пишутся в строку с разделителем <code>';'</code>. Пример <code>'min = 1; max = 10'</code></li>
+          <li> Пробелы значения не имеют </li>
+          <li> Регистр важен </li>
+          <li> Функции числовых значений
+              <ul>
+                <li> <strong>Параметры типов полей</strong> Пишутся в формате <code>param = value;</code> Пример <code>min = 1 </code>
+                     Если  типу нужен параметр - он подтянется автоматически. Параметры можно упустить.
+                <li><strong>Арифметические операции</strong> Задаются в формате - <code>lambda x: value [*, /, +, -] x</code> или <code>lambda x: x [*, /, +, -] value</code>. 
+                Пример - если нужно чтобы все значения умножались на 4 пишем <code>lambda x: x*4 </code>. Допустипо применять несколько операций в таком виде они применятся поочередно: <code> lambda x: x*4; lambda x: x+2 </code> </li> 
+                <li> <strong>Округление </strong><code>round = [число знаков]</code>. Пример - <code>round = 5</code></li>
+              </ul>
+          </li>
+          <li>
+          Форматирование даты/времени <code>format = [строка форматирования]</code>. Пример <code> format = %d.%m.%Y</code>
+          Синтаксис форматирования можно найти <a href='https://pythonworld.ru/moduli/modul-time.html'>здесь </a>
+          </li>
+          <li> Функции строковых значений
+             <ul>
+               <li>Скоро будут :-) </li>
+          </li>
+
+     </div>
   <hr>
-  <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+  <p class="mb-0">Приложение работает в демо режиме</p>
 </div>
         </div>
     </section>
+    <div class='modal-mask'  v-show='data_processed'>
+  <div class='modal-wrapper'>
+       <div class="d-flex justify-content-center">
+        <h3> Loading {</h3>
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow text-success" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div class="spinner-grow  text-info" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h3> } </h3>
+      </div>
+  </div>
+</div>
+<modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'>
 </main>
-
+<footer class='text-center p-1'>
+<div class="alert alert-success" role="alert">
+  <i class="far fa-copyright"></i> Valis 2019
+</div>
+</footer>
 <script type="text/x-template" id="modal-template">
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container p-1">
 
           <div class="modal-header">
-            <slot name="header container-fluid">
-              <nav id="navbar-example2" class="navbar navbar-light bg-light row">
-                  <a class="navbar-brand col" href="#">Choise field type</a>
+            <slot name="header">
+              <div class='container'>
+              <nav id="navbar-example2" class="navbar navbar-expand-lg alert-success row ml-2 mr-2">
+                  <span class="navbar-brand col m-2" >Choise field type</span>
                   <div class="input-group col">
-                      <input type="text" class="form-control"  size ='30' v-on:input="$emit('sort',$event.target.value)">
+                      <input type="text" class=" form-control"  size ='30' v-on:input="$emit('sort',$event.target.value)">
                               <div class="input-group-prepend">
                                   <div class="input-group-text">
                                   <i class="fas fa-search"></i>
@@ -161,18 +252,19 @@
                               </div>
                   </div>
               </nav>
+              </div>
             </slot>
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body m-1">
             <slot name="body">
               <div class ='container-fluid' >
               <div class = 'row' v-for='row in items'>
-                  <div class = 'col-3' v-for = 'col in row'> 
-                      <div class="card" @click="$emit('on_select', col.id, col.script)">
-                          <div class="card-body">
+                  <div class = 'col-3 p-1' v-for = 'col in row'> 
+                      <div class="card m-1 bg-light" @click="$emit('on_select', col.id, col.script)">
+                          <div class="card-body p-2 m-1">
                              <h5 class="card-title">{{col.desc}}</h5>
-                            <p class="card-text">{{col.example}}</p>
+                            <p class="card-text"><small>{{col.example}}</small></p>
                           </div>
                       </div>
                   </div>
@@ -180,7 +272,7 @@
               </div>
             </slot>
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer ">
             <slot name="footer">
               <button class="modal-default-button" @click="$emit('close')">
                 Close
@@ -195,4 +287,6 @@
 
 <script src='static/main.js'></script>
 <script src='static/adaptors.js'></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </html>
