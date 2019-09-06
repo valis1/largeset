@@ -134,6 +134,7 @@ class Mapper:
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda : self.g.datetime.datetime(**kw).strftime(params.get('format', '%c'))
         elif name == 'date':
+            print(params.get('format'))
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'ean_code':
