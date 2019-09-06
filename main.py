@@ -70,7 +70,8 @@ conf = {
 if os.getenv('PROD'):
     cherrypy.server.unsubscribe()
     cherrypy.engine.start()
-    app = cherrypy.tree.mount(LargeSetService(), '/', conf)
+    app = cherrypy.tree.mount(LargeSetUI(), '/', conf)
+    app.service = LargeSetService()
 else:
     app = LargeSetUI()
     app.service = LargeSetService()
