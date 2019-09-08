@@ -15,7 +15,7 @@
       Largeset - Fake data generator
        </span>
        <span class="navbar-text">
-        v. 0.2 (alpha)
+        v. 0.3.0 (alpha)
     </span>
     </div>
   </header>
@@ -105,6 +105,7 @@
                       <select v-model="main_form.language" class="form-control form-control-sm" id='language'>
                           <option v-bind:value="'en'">English</option>
                           <option v-bind:value="'ru'">Russian</option>
+                          <option v-bind:value="'uk'">Ukrainian</option>
                       </select>
                   </div>
                   <label for="inputdatalen" class='col-form-label' >Rows :</label>
@@ -140,6 +141,12 @@
               <button type="button" class="btn btn-primary btn-lg btn-block ml-1 mt-4" v-on:click='get_data()'>Process Data</button>
             </form>
         </article> 
+        <div class="alert alert-light border-top m-2" role="alert">
+             <h4 class="alert-heading">What's new</h4>
+             <ul>
+                <li>08.09.2019 - v. 0.3.0 Добавлена локализация Украина, добавлен тип данных - константа, фикс формата даты</li>
+             </ul>
+        </div>
         </div>
         <div class='col-4'>
         <div class="alert alert-success m-2" role="alert">
@@ -225,6 +232,7 @@
       </div>
   </div>
 </div>
+
 <modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'>
 </main>
 <footer class='text-center p-1'>
