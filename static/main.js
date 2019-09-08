@@ -17,6 +17,7 @@ var app = new Vue({
         file_type: 'text',
         delimiter: ';',
         header: true,
+        encoding: 'utf-8',
         main_form: {
             null_method: 'percent_optimized',
             language: 'ru',

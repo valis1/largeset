@@ -15,6 +15,6 @@ function to_csv(json_data, header, delimiter) {
         }
         result_string += '\n';   
     }
-    const blob = new Blob([result_string], {type: 'text/csv;charset=utf-8'});
+    const blob = new Blob([result_string], {type: 'text/csv; charset=utf-8'});
     return blob;
 }

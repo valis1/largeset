@@ -39,6 +39,8 @@ def get_field_types():
          'script': 'min = 10; max = 104; ', 'resolved_functions': []},
         {'id': 'float', 'desc': 'Float numbers', 'example': '1.04, 2.05 ...',
          'script': 'min = 10; max = 104; ', 'resolved_functions': []},
+        {'id': 'const', 'desc': 'Constant value', 'example': 'Any numeric or string value',
+         'script': 'const = 5; ', 'resolved_functions': []},
 
 
 

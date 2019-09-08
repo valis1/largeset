@@ -27,11 +27,12 @@ class SriptExpressions:
             'step':  r'\s*step\s*=\s*[0-9]*',
             'start':  r'\s*start\s*=\s*[0-9]*',
             'end': r'\s*end\s*=\s*[0-9]*',
-            'round': r'\s*round\s*=\s*[0-9]*'
+            'round': r'\s*round\s*=\s*[0-9]*',
         }
         self.string_params = {
             'format': r'\s*format\s*=\s*.*',
             'type': r'\s*type\s*=\s*(ean-13|ean-8)\s*',
+            'const': r'\s*const\s*=.*'
         }
 
         self.__parseCode()
@@ -121,7 +122,7 @@ class Mapper:
             'car_model': self.g.transport.car,
         }
 
-    def get_function(self,name, field_id, params={}):
+    def get_function(self, name, field_id, params={}):
         if name == 'sequence':
             self.__set_sequence(field_id,params=params)
         func = self.map.get(name, False)
@@ -150,6 +151,8 @@ class Mapper:
             return lambda : self.__gen_float(**kw)
         elif name == 'sequence':
             return lambda : self.__get_sequence_item(field_id)
+        elif name == 'const':
+            return lambda : params.get('const', 0)
 
 
     def __gen_float(self, minimum=1, maximum=100, round_param=2):
