@@ -4,6 +4,7 @@ import numpy as np
 
 # Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
 def get_range(num, qty):
+    print(qty)
     combinations = list(itertools.product([1,0], repeat=num))
     combinations.sort(key=lambda x: sum(x), reverse=True)
 
@@ -12,16 +13,15 @@ def get_range(num, qty):
         addition = 0
         combinations = combinations[:qty]
     else:
-       qty_per_combination = int(qty / num)
+       qty_per_combination = int(qty / len(combinations))
        addition = qty - qty_per_combination * num
     res = {}
     for i in combinations:
         if res.get(i,False):
-            res[i]+=qty_per_combination+addition
+            res[i] += qty_per_combination
         else:
-            res.update({i:qty_per_combination+addition})
-        if addition>0:
-            addition = 0
+            res.update({i:qty_per_combination})
+    print(res)
     return res
 
 def get_optimized_range(percents):
@@ -55,12 +55,12 @@ def generate_matrix(nulls, fields, qty):
         row = {}
         for field in fields:
             # Processing nulls
-            if field['null'] and null_schema_iterator:
+            if null_schema_iterator and field['null']:
                 try:
                     is_null = next(null_schema_iterator)
-                    nulls[null_schema]-=1
                 except StopIteration:
                     null_schema = max(nulls.items(), key=operator.itemgetter(1))
+                    print(null_schema)
                     if null_schema[1] == 0:
                         is_null = 0
                         null_schema_iterator = False

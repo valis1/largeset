@@ -1,9 +1,9 @@
-
 Vue.component('modal', {
     template: '#modal-template',
     props: ['items'],
         
     });
+
 
 var app = new Vue({
     el: '#app',
@@ -23,9 +23,10 @@ var app = new Vue({
             language: 'ru',
             data_len: 10,
             fields: [
-                {id:'TextField1', percent_nulls:0, null:true, sctript:'', type:'int'},
-                {id:'NumericField2', percent_nulls:0, null:false, sctript:'', type:'int'},
-                {id:'DatetimeField3',percent_nulls:0, null:false, sctript:'', type:'int'}
+                {id:'Company_Name',percent_nulls:0, null:false, sctript:'', type:'company'},
+                {id:'Address', percent_nulls:0, null:false, sctript:'', type:'datetime'},
+                {id:'Employees', percent_nulls:0, null:true, sctript:'', type:'int'},
+
             ]
         },
         items: []
@@ -48,6 +49,14 @@ var app = new Vue({
         modal_event(model){
             this.current_editable_model = model;
             this.showModal = true;
+        },
+        entry_modal_event(model){
+            this.current_editable_model = model;
+            this.showEntryModal = true;
+        },
+        close_entry_modal(text){
+            this.current_editable_model.script = text.replace('&#13;&#10;','')
+            this.showEntryModal=false
         },
         close_allert(){
            this.success_request_allert = false;
@@ -127,7 +136,8 @@ var app = new Vue({
                 cnt++;
             }
             return result;
-        }
+        },
+
     }
 }
 );

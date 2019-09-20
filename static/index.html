@@ -234,6 +234,8 @@
 </div>
 
 <modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'>
+<modalm  @close="showModal = false" >
+
 </main>
 <footer class='text-center p-1'>
 <div class="alert alert-success" role="alert">
@@ -245,7 +247,6 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container p-1">
-
           <div class="modal-header">
             <slot name="header">
               <div class='container'>
@@ -286,6 +287,25 @@
                 Close
               </button>
             </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
+
+<script type="text/x-template" id="modal-templatem">
+  <transition name="modalm">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container p-1">
+          <div class="modal-header">
+            <slot name="header">
+              ff
+            </slot>
+          </div>
+           ffff
+          <div class="modal-body m-1">
           </div>
         </div>
       </div>

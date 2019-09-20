@@ -201,15 +201,12 @@ class Request:
             self.fields = []
             for i in self.data['fields']:
                 if i.get('id') and i.get('type'):
-                    if i.get('percent_nulls') == 0:
-                        i['null'] = False
                     self.fields.append(i)
-                    if i.get('null', False):
+                    if int(i.get('percent_nulls', 0)) >0 and self.null_method==0:
                         self.nulls += 1
-                        if self.null_method == 0:
-                            self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
-
-
+                        self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
+                    elif self.null_method == 1 and bool(i.get('null')):
+                        self.nulls += 1
                 else:
                     raise ParsingError('Field id and field type are required')
         except KeyError:
