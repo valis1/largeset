@@ -135,7 +135,6 @@ class Mapper:
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda : self.g.datetime.datetime(**kw).strftime(params.get('format', '%c'))
         elif name == 'date':
-            print(params.get('format'))
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
             return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'ean_code':
@@ -201,12 +200,15 @@ class Request:
             self.fields = []
             for i in self.data['fields']:
                 if i.get('id') and i.get('type'):
-                    self.fields.append(i)
                     if int(i.get('percent_nulls', 0)) >0 and self.null_method==0:
                         self.nulls += 1
                         self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
+                        i['null'] = True
                     elif self.null_method == 1 and bool(i.get('null')):
                         self.nulls += 1
+                    else:
+                        i['null'] = False
+                    self.fields.append(i)
                 else:
                     raise ParsingError('Field id and field type are required')
         except KeyError:
