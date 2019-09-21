@@ -4,7 +4,6 @@ import numpy as np
 
 # Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
 def get_range(num, qty):
-    print(qty)
     combinations = list(itertools.product([1,0], repeat=num))
     combinations.sort(key=lambda x: sum(x), reverse=True)
 
@@ -46,10 +45,10 @@ def get_optimized_range(percents):
 def generate_matrix(nulls, fields, qty):
     res = []
     null_schema_iterator = None
-    null_schema = None
     if nulls:
-        null_schema = max(nulls.items(), key=operator.itemgetter(1))[0]
-        null_schema_iterator = iter(null_schema)
+        nulls_iterator = iter(nulls.keys())
+        current_null = next(nulls_iterator)
+        null_schema_iterator = iter(current_null)
     l_count = 0
     while l_count<qty:
         row = {}
@@ -59,14 +58,16 @@ def generate_matrix(nulls, fields, qty):
                 try:
                     is_null = next(null_schema_iterator)
                 except StopIteration:
-                    null_schema = max(nulls.items(), key=operator.itemgetter(1))
-                    print(null_schema)
-                    if null_schema[1] == 0:
-                        is_null = 0
-                        null_schema_iterator = False
+                    nulls[current_null] -= 1
+                    if nulls[current_null] == 0:
+                        try:
+                            current_null = next(nulls_iterator)
+                            null_schema_iterator = iter(current_null)
+                        except StopIteration:
+                            is_null = 0
+                            null_schema_iterator = None
                     else:
-                        null_schema = null_schema[0]
-                        null_schema_iterator = iter(null_schema)
+                        null_schema_iterator = iter(current_null)
                 if is_null == 1:
                     row.update({field['id']: None})
                 else:
