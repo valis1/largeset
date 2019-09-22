@@ -47,12 +47,17 @@ input[type=text]{
 
   .small-modal {
     width: 370px;
-    height: 400px;
+    height: 420px;
     
   }
  .large-modal {
   width: 900px;
 
+ }
+
+ .dragged {
+    cursor: move;
+    opacity: 0.9;
  }
   
 

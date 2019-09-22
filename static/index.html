@@ -213,7 +213,8 @@
           </li>
           <li> Функции строковых значений
              <ul>
-               <li>Скоро будут :-) </li>
+               <li>В верхний регистр - <code>upper(x)</code></li>
+               <li>В нижний регистр - <code>lower(x)</code></li>
           </li>
 
      </div>
@@ -272,7 +273,7 @@
             </slot>
           </div>
 
-          <div class="modal-body m-1">
+          <div class="modal-body m-1 ">
             <slot name="body">
               <div class ='container-fluid' >
               <div class = 'row' v-for='row in items'>
@@ -312,8 +313,14 @@
               <button type="button" class="btn btn-white m-1 pull-right" @click="close"> <i class="fas fa-lg fa-check"></i></button>
             </slot>
           </div>
-          <div class="modal-body m-1">
-              <textarea rows = '12' class ='form-control ' v-once ref = 'edited_text' cols='30'>{{formated_text}}</textarea>
+          <div class="modal-body pt-0 ">
+              <ul class="nav">
+                  <li class="nav-item p-0">
+                      <span class="badge badge-info dragged"  @dragend ='end_drag($event)' @dragstart= 'start_drag($event)'  draggable="true">lower(x)</span>
+                  </li>
+                </ul>
+
+              <textarea rows = '12' class ='form-control mt-1 ' @dragover='dragover($event)' @drop='on_drop($event)' @dragleave='dragleave($event)' @dragenter= 'dragenter($event)' v-once ref = 'edited_text' cols='30'>{{formated_text}}</textarea>
           </div>
         </div>
       </div>

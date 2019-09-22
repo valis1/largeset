@@ -16,6 +16,8 @@ class SriptExpressions:
             'lambda x: x+%s': r'\s*lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
             'lambda x:x-%s': r'\s*lambda x\s*:\s*x\s*-\s*[0-9]+',
             'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x',
+            'upper': r'\s*upper\(\s*x\s*\)',
+            'lower': r'\s*lower\(\s*x\s*\)'
         }
         self.code = codestring.split(';')
         self.formated_params ={}
@@ -28,11 +30,12 @@ class SriptExpressions:
             'start':  r'\s*start\s*=\s*[0-9]*',
             'end': r'\s*end\s*=\s*[0-9]*',
             'round': r'\s*round\s*=\s*[0-9]*',
+
         }
         self.string_params = {
             'format': r'\s*format\s*=\s*.*',
             'type': r'\s*type\s*=\s*(ean-13|ean-8)\s*',
-            'const': r'\s*const\s*=.*'
+            'const': r'\s*const\s*=.*',
         }
 
         self.__parseCode()
@@ -55,10 +58,18 @@ class SriptExpressions:
     def __get_functions(self, code_string):
         for k,v in self.function_patterns.items():
             if re.match(v, code_string):
-                x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
-                if x:
-                    self.formated_functions.append(eval(k%x.group(0)))
+                if k == 'upper':
+                    self.formated_functions.append(lambda x: x.upper())
                     return True
+                elif k == 'lower':
+                    self.formated_functions.append(lambda x: x.lower())
+                    return True
+                else:
+                    x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
+                    if x:
+                        self.formated_functions.append(eval(k%x.group(0)))
+                        return True
+        return False
 
     def __get_string_params(self, code_string):
         for k, v in self.string_params.items():

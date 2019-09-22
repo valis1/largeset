@@ -19,7 +19,37 @@ Vue.component('scriptmodal', {
     methods: {
         close: function(){
             this.$emit('close', this.$refs.edited_text.value)
+        },
+        start_drag: function(e){
+            e.target.style.opacity = '0.1';
+            e.dataTransfer.setData("text", e.target.innerText);
+            e.dataTransfer.effectAllowed = "move";
+        },
+        end_drag: function(e) {
+            e.target.style.opacity='0.9';
+        },
+        dragenter: function(e){
+            e.preventDefault();
+            e.target.classList.toggle('border');
+            e.target.classList.toggle('border-primary');
+        },
+        dragleave: function(e){
+            e.target.classList.toggle('border');
+            e.target.classList.toggle('border-primary');
+        },
+        on_drop: function(e){
+            if (this.$refs.edited_text.value.length >0) {
+            this.$refs.edited_text.value += '\n' + e.dataTransfer.getData('text') + ';'
+            }
+            else {
+                this.$refs.edited_text.value =  e.dataTransfer.getData('text') + ';'
+            }
+        },
+        dragover: function(e){
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
         }
+
     }
     
 });
