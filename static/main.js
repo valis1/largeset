@@ -1,9 +1,29 @@
+String.prototype.replaceAll = function(search, replace){
+    return this.split(search).join(replace);
+  }
+
 Vue.component('modal', {
     template: '#modal-template',
     props: ['items'],
         
     });
 
+Vue.component('scriptmodal', {
+    template: '#script-modal',
+    props: ['text'],
+    computed: {
+        formated_text: function(){
+            let newline = String.fromCharCode(13, 10);
+            return this.text.replaceAll(';', ';' + newline).replaceAll(' ', '')
+        }
+    },
+    methods: {
+        close: function(){
+            this.$emit('close', this.$refs.edited_text.value)
+        }
+    }
+    
+});
 
 var app = new Vue({
     el: '#app',
@@ -11,6 +31,7 @@ var app = new Vue({
         filtered_items:[],
         current_editable_model: {},
         showModal:false,
+        showScriptModal:false,
         data_processed:false,
         success_request_allert: false,
         request_time: 1,
@@ -50,13 +71,15 @@ var app = new Vue({
             this.current_editable_model = model;
             this.showModal = true;
         },
-        entry_modal_event(model){
+        scrypt_modal_event(model){
             this.current_editable_model = model;
-            this.showEntryModal = true;
+            this.showScriptModal = true;
         },
-        close_entry_modal(text){
-            this.current_editable_model.script = text.replace('&#13;&#10;','')
-            this.showEntryModal=false
+        close_scrypt_modal(text){
+            let newline = String.fromCharCode(13, 10);
+            console.log(text)
+            this.current_editable_model.sctript = text.replaceAll(newline,'')
+            this.showScriptModal=false
         },
         close_allert(){
            this.success_request_allert = false;

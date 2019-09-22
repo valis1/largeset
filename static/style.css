@@ -36,7 +36,6 @@ input[type=text]{
   }
   
   .modal-container {
-    width: 900px;
     margin: 0px auto;
     padding: 20px 30px;
     background-color: #fff;
@@ -45,6 +44,16 @@ input[type=text]{
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;
   }
+
+  .small-modal {
+    width: 370px;
+    height: 400px;
+    
+  }
+ .large-modal {
+  width: 900px;
+
+ }
   
 
   .modal-header h3 {

@@ -77,7 +77,14 @@
                           </td>
 
                           <td>
-                               <input type='text' v-model='field.sctript' size='35' >
+                              <div class="input-group">
+                                  <input type='text' v-model='field.sctript' size='35' >
+                                  <div class="input-group-prepend">
+                                      <div class="input-group-text"  @click="scrypt_modal_event(field)">
+                                          <i class="far fa-edit"></i>
+                                      </div>
+                                  </div>
+                              </div>
                           </td>
 
                           <td>
@@ -233,8 +240,8 @@
   </div>
 </div>
 
-<modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'>
-<modalm  @close="showModal = false" >
+<modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'></modal>
+<scriptmodal v-if='showScriptModal' @close='close_scrypt_modal' v-bind:text='current_editable_model.sctript'></scriptmodal>
 
 </main>
 <footer class='text-center p-1'>
@@ -246,7 +253,7 @@
   <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container p-1">
+        <div class="modal-container p-1 large-modal">
           <div class="modal-header">
             <slot name="header">
               <div class='container'>
@@ -294,18 +301,19 @@
   </transition>
 </script>
 
-<script type="text/x-template" id="modal-templatem">
-  <transition name="modalm">
+<script type="text/x-template" id="script-modal">
+  <transition name="modal">
     <div class="modal-mask">
       <div class="modal-wrapper">
-        <div class="modal-container p-1">
-          <div class="modal-header">
+        <div class="modal-container p-1 small-modal">
+          <div class="modal-header p-1 bg-light'">
             <slot name="header">
-              ff
+              <span class = ' m-1 p-2'>Script Editor</span>
+              <button type="button" class="btn btn-white m-1 pull-right" @click="close"> <i class="fas fa-lg fa-check"></i></button>
             </slot>
           </div>
-           ffff
           <div class="modal-body m-1">
+              <textarea rows = '12' class ='form-control ' v-once ref = 'edited_text' cols='30'>{{formated_text}}</textarea>
           </div>
         </div>
       </div>
