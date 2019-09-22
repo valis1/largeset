@@ -13,8 +13,7 @@ Vue.component('scriptmodal', {
     props: ['text'],
     computed: {
         formated_text: function(){
-            let newline = String.fromCharCode(13, 10);
-            return this.text.replaceAll(';', ';' + newline).replaceAll(' ', '')
+            return this.text.replaceAll(';', ';' + '\n').replaceAll(' ', '')
         }
     },
     methods: {
@@ -76,10 +75,8 @@ var app = new Vue({
             this.showScriptModal = true;
         },
         close_scrypt_modal(text){
-            let newline = String.fromCharCode(13, 10);
-            console.log(text)
-            this.current_editable_model.sctript = text.replaceAll(newline,'')
-            this.showScriptModal=false
+            this.current_editable_model.sctript = text.replaceAll('\n','');
+            this.showScriptModal=false;
         },
         close_allert(){
            this.success_request_allert = false;
