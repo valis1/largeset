@@ -1,4 +1,3 @@
-import  p
 def get_field_types():
     return [
         {'id': 'address', 'desc': 'Full Address', 'example': 'ул. Соймоновская 436', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
