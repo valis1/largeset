@@ -1,3 +1,4 @@
+import  p
 def get_field_types():
     return [
         {'id': 'address', 'desc': 'Full Address', 'example': 'ул. Соймоновская 436', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
@@ -7,8 +8,10 @@ def get_field_types():
         {'id': 'postal_code', 'desc': 'Postal Code', 'example': '376707', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
         {'id': 'company', 'desc': 'Company name', 'example': '«Челябэнергосбыт»', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
         {'id': 'day_of_week', 'desc': 'Day of Week Name', 'example': 'Четверг, Пятница', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
-        {'id': 'timestamp', 'desc': 'Unix Timestamp', 'example': '1247770623', 'script': '', 'resolved_functions':[]},
-        {'id': 'dish', 'desc': 'Dish Name', 'example': 'Квашеная капуста', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
+        {'id': 'timestamp', 'desc': 'Unix Timestamp', 'example': '1247770623', 'script': '',
+         'resolved_functions':['lambda x: x * ', 'lambda x: x + ', 'lambda x: x -', 'lambda x: x/']},
+        {'id': 'dish', 'desc': 'Dish Name', 'example': 'Квашеная капуста', 'script': '',
+         'resolved_functions':['lover(x)', 'upper(x)']},
         {'id': 'drink', 'desc': 'Drink Name', 'example': 'Мэри Пикфорд', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
         {'id': 'fruit', 'desc': 'Fruit name', 'example': 'Маболо', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
         {'id': 'vegetable', 'desc': 'Vegetable Name', 'example': 'Лагенария', 'script': '', 'resolved_functions':['lover(x)', 'upper(x)']},
@@ -26,23 +29,31 @@ def get_field_types():
         {'id': 'ip', 'desc': 'IP Address', 'example': '102.93.58.22', 'script': '', 'resolved_functions': []},
         {'id': 'car_model', 'desc': 'Car model', 'example': 'Continental Mark II', 'script': '', 'resolved_functions': ['lover(x)', 'upper(x)']},
         {'id': 'sequence', 'desc': 'Digit Sequence', 'example': '10, 20, 30 ...', 'script': 'start = 1; step = 1',
-         'resolved_functions': []},
+         'resolved_functions': ['start =', 'step =']},
         {'id': 'price', 'desc': 'Price', 'example': '10.06, 11.2 ...', 'script': 'min = 1; max = 100',
-         'resolved_functions': []},
+         'resolved_functions': ['lambda x: x * ', 'lambda x: x + ', 'lambda x: x -', 'lambda x: x/']},
         {'id': 'datetime', 'desc': 'Date and time', 'example': '01.09.2019 21:29:20',
-         'script': 'min = 2018; max = 2019; format= %d%m%Y', 'resolved_functions': []},
+         'script': 'min = 2018; max = 2019; format= %d.%m.%Y %H:%M:%S', 'resolved_functions': ['min=', 'max=', 'format= %m-%d-%Y %h:%M:%S' ]},
         {'id': 'date', 'desc': 'Date', 'example': '01.09.2010',
-         'script': 'min = 2018; max = 2019; format= %d%m%Y', 'resolved_functions': []},
+         'script': 'min = 2018; max = 2019; format= %d.%m.%Y', 'resolved_functions': ['min=', 'max=', 'format= %m-%d-%Y %h:%M:%S' ]},
         {'id': 'ean_code', 'desc': 'EAN Code', 'example': '4002232323231',
-         'script': 'type = ean-13', 'resolved_functions': []},
+         'script': 'type = ean-13', 'resolved_functions': ['type= ean-8']},
         {'id': 'int', 'desc': 'Integer numbers', 'example': '103, 200, 423',
-         'script': 'min = 10; max = 104; ', 'resolved_functions': []},
+         'script': 'min = 10; max = 104; ', 'resolved_functions': ['lambda x: x * ', 'lambda x: x + ',
+                                                                   'lambda x: x -', 'lambda x: x/']},
         {'id': 'float', 'desc': 'Float numbers', 'example': '1.04, 2.05 ...',
-         'script': 'min = 10; max = 104; ', 'resolved_functions': []},
+         'script': 'min = 10; max = 104; ', 'resolved_functions': ['round= 2', 'lambda x: x * ',
+                                                                   'lambda x: x + ', 'lambda x: x -', 'lambda x: x/']},
         {'id': 'const', 'desc': 'Constant value', 'example': 'Any numeric or string value',
-         'script': 'const = 5; ', 'resolved_functions': []},
-
-
-
+         'script': 'const = 5; ', 'resolved_functions': ['const=']},
+        {'id': 'isbn', 'desc': 'ISBN', 'example': '1-34411-214-7', 'script':'type=isbn-10',
+         'resolved_functions': ['type=isbn-13']
+         },
+        {'id': 'imei', 'desc': 'Phone IMEI', 'example': '359254067837658', 'script': '',
+         'resolved_functions': ['']
+         },
+        {'id': 'choice', 'desc': 'Choice item from range', 'example': '1', 'script': 'items=[1,2,3]',
+         'resolved_functions': ['items= ["a","b","c"]']
+         }
 
     ]

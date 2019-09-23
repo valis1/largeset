@@ -4,6 +4,8 @@ import json
 import uuid
 import re
 import random
+import ast
+
 
 class SriptExpressions:
 
@@ -17,7 +19,7 @@ class SriptExpressions:
             'lambda x:x-%s': r'\s*lambda x\s*:\s*x\s*-\s*[0-9]+',
             'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x',
             'upper': r'\s*upper\(\s*x\s*\)',
-            'lower': r'\s*lower\(\s*x\s*\)'
+            'lower': r'\s*lower\(\s*x\s*\)',
         }
         self.code = codestring.split(';')
         self.formated_params ={}
@@ -31,11 +33,13 @@ class SriptExpressions:
             'end': r'\s*end\s*=\s*[0-9]*',
             'round': r'\s*round\s*=\s*[0-9]*',
 
+
         }
         self.string_params = {
             'format': r'\s*format\s*=\s*.*',
-            'type': r'\s*type\s*=\s*(ean-13|ean-8)\s*',
+            'type': r'\s*type\s*=\s*(ean-13|ean-8|isbn-10|isbn-13)\s*',
             'const': r'\s*const\s*=.*',
+            'items': r'\s*items\s*=\s*\[.*]\s*'
         }
 
         self.__parseCode()
@@ -98,8 +102,6 @@ class SriptExpressions:
     def functions(self):
         return self.formated_functions
 
-
-
 class Mapper:
     def __init__(self, locate):
         self.g = Generic(locate)
@@ -131,6 +133,7 @@ class Mapper:
             'mac': self.g.internet.mac_address,
             'ip': self.g.internet.ip_v4,
             'car_model': self.g.transport.car,
+            'imei': self.g.code.imei
         }
 
     def get_function(self, name, field_id, params={}):
@@ -153,6 +156,12 @@ class Mapper:
                 return lambda : self.g.code.ean(enums.EANFormat.EAN13)
             else:
                 return lambda : self.g.code.ean(enums.EANFormat.EAN8)
+        elif name == 'isbn':
+            if params.get('type', 'isbn-10') == 'isbn-10':
+                return lambda : self.g.code.isbn(enums.ISBNFormat.ISBN10)
+            else:
+                return lambda : self.g.code.isbn(enums.ISBNFormat.ISBN13)
+
         elif name == 'int':
             kw = {'minimum':params.get('min', 1), 'maximum':params.get('max',100)}
             return lambda : self.g.numbers.between(**kw)
@@ -163,6 +172,8 @@ class Mapper:
             return lambda : self.__get_sequence_item(field_id)
         elif name == 'const':
             return lambda : params.get('const', 0)
+        elif name == 'choice':
+            return lambda : random.choice(ast.literal_eval(params.get('items', '[1,2,3]')))
 
 
     def __gen_float(self, minimum=1, maximum=100, round_param=2):
