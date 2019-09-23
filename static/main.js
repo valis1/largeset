@@ -10,10 +10,17 @@ Vue.component('modal', {
 
 Vue.component('scriptmodal', {
     template: '#script-modal',
-    props: ['text'],
+    props: ['editable', 'items'],
     computed: {
         formated_text: function(){
-            return this.text.replaceAll(';', ';' + '\n').replaceAll(' ', '')
+            return this.editable.sctript.replaceAll(';', ';' + '\n').replaceAll(' ', '')
+        },
+        item_funcs: function(){
+            for (item of this.items){
+                if (item.id == this.editable.type){
+                    return item.resolved_functions;
+                }
+            }
         }
     },
     methods: {
@@ -74,7 +81,7 @@ var app = new Vue({
             data_len: 10,
             fields: [
                 {id:'Company_Name',percent_nulls:0, null:false, sctript:'', type:'company'},
-                {id:'Address', percent_nulls:0, null:false, sctript:'', type:'datetime'},
+                {id:'Date_Start', percent_nulls:0, null:false, sctript:'', type:'datetime'},
                 {id:'Employees', percent_nulls:0, null:true, sctript:'', type:'int'},
 
             ]

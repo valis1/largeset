@@ -152,6 +152,7 @@
              <h4 class="alert-heading">What's new</h4>
              <ul>
                 <li>08.09.2019 - v. 0.3.0 Добавлена локализация Украина, добавлен тип данных - константа, фикс формата даты</li>
+                <li>23.09.2019 - v. 0.4.0 Фикс багов с методами нулов, добавлены функции upper/lower, окно редактора скриптов</li>
              </ul>
         </div>
         </div>
@@ -242,7 +243,7 @@
 </div>
 
 <modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'></modal>
-<scriptmodal v-if='showScriptModal' @close='close_scrypt_modal' v-bind:text='current_editable_model.sctript'></scriptmodal>
+<scriptmodal v-if='showScriptModal' @close='close_scrypt_modal' v-bind:editable='current_editable_model' v-bind:items='items'></scriptmodal>
 
 </main>
 <footer class='text-center p-1'>
@@ -309,14 +310,14 @@
         <div class="modal-container p-1 small-modal">
           <div class="modal-header p-1 bg-light'">
             <slot name="header">
-              <span class = ' m-1 p-2'>Script Editor</span>
+              <span class = ' m-1 p-0'>Script Editor <p class='m-0'><small>Drag&Drop functions to the texarea!<span class="badge badge-secondary">New</span></small></span>
               <button type="button" class="btn btn-white m-1 pull-right" @click="close"> <i class="fas fa-lg fa-check"></i></button>
             </slot>
           </div>
           <div class="modal-body pt-0 ">
               <ul class="nav">
-                  <li class="nav-item p-0">
-                      <span class="badge badge-info dragged"  @dragend ='end_drag($event)' @dragstart= 'start_drag($event)'  draggable="true">lower(x)</span>
+                  <li class="nav-item p-0" v-for='func in item_funcs'>
+                      <span class="badge badge-info dragged ml-1"  @dragend ='end_drag($event)' @dragstart= 'start_drag($event)'  draggable="true">{{func}}</span>
                   </li>
                 </ul>
 
