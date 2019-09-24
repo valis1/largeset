@@ -133,7 +133,10 @@ class Mapper:
             'mac': self.g.internet.mac_address,
             'ip': self.g.internet.ip_v4,
             'car_model': self.g.transport.car,
-            'imei': self.g.code.imei
+            'imei': self.g.code.imei,
+            'phone_model': self.g.hardware.phone_model,
+            'boolean':self.g.development.boolean,
+            'operation_system': self.g.development.os
         }
 
     def get_function(self, name, field_id, params={}):
