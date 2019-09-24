@@ -54,13 +54,13 @@
                  <tbody class="table-striped">
                      <tr v-for ="(field, key) in main_form.fields" >
                           <td>
-                              <input type='text' v-model=field.id size='15'>
+                              <input type='text' class="form-control" v-model=field.id >
                           </td>
                           
                           <td>
                               <div class="input-group">
                                   <input type="text" class="form-control" editable='false' 
-                                  class='btn btn-light' readonly='on' v-model='field.type' size ='10'>
+                                  class='btn btn-light' readonly='on' v-model='field.type'>
                                   <div class="input-group-prepend">
                                       <div class="input-group-text"  @click="modal_event(field)">
                                           <i class="far fa-folder-open"></i>
@@ -71,14 +71,14 @@
 
                           <td>
                               <input v-show="main_form.null_method=='percent_optimized'"
-                              type='number' v-model='field.percent_nulls' class="percent-input">
+                              type='number' v-model='field.percent_nulls' class=" form-control">
                               <input v-show="main_form.null_method=='combination_optimized'"
-                              true-value=true false-value= false type='checkbox' v-model='field.null'>
+                              true-value=true false-value= false type='checkbox' class="form-control" v-model='field.null'>
                           </td>
 
                           <td>
                               <div class="input-group">
-                                  <input type='text' v-model='field.sctript' size='35' >
+                                  <input type='text' v-model='field.sctript' class="form-control"  >
                                   <div class="input-group-prepend">
                                       <div class="input-group-text"  @click="scrypt_modal_event(field)">
                                           <i class="far fa-edit"></i>
