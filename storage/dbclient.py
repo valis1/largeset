@@ -22,8 +22,7 @@ def get_field_types():
          'resolved_functions': ['']
          }]
 
-def save_model(model):
-    connect
+
 
 
 
