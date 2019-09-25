@@ -72,8 +72,13 @@
                           <td>
                               <input v-show="main_form.null_method=='percent_optimized'"
                               type='number' v-model='field.percent_nulls' class=" form-control">
-                              <input v-show="main_form.null_method=='combination_optimized'"
-                              true-value=true false-value= false type='checkbox' class="form-control" v-model='field.null'>
+                              <div class="checkbox" v-show="main_form.null_method=='combination_optimized'">
+                                <label style="font-size: 1.3em">
+                                    <input true-value=true false-value= false type='checkbox'  v-model='field.null'>
+                                    <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                                </label>
+                            </div>
+
                           </td>
 
                           <td>
@@ -134,10 +139,14 @@
                      <div class='col'>
                          <input type="text"  id="delimiterinput" v-model='delimiter' class='form-control'>
                      </div>
-                     <label for="headercheck" >Include Header :</label>
-                     <div class='col'>
-                         <input type="checkbox"  id="headercheck" class = 'big-checkbox' v-model='header'  true-value=true false-value= false>
-                     </div>
+                     <div class="checkbox pr-3">
+                        <label style="font-size: 1em">
+                            <input type="checkbox" id="headercheck" class = 'big-checkbox' v-model='header'  true-value=true false-value= false>
+                            <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+                            Add Header
+                        </label>
+                    </div>
+                     
               </div>
               <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='success_request_allert'>
                Данные успещно сгенерированы. Время ответа: {{request_time}} ms
