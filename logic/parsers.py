@@ -20,6 +20,8 @@ class SriptExpressions:
             'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x',
             'upper': r'\s*upper\(\s*x\s*\)',
             'lower': r'\s*lower\(\s*x\s*\)',
+            'preffix': r'^\+',
+            'suffix': r'.+\+'
         }
         self.code = codestring.split(';')
         self.formated_params ={}
@@ -32,7 +34,6 @@ class SriptExpressions:
             'start':  r'\s*start\s*=\s*[0-9]*',
             'end': r'\s*end\s*=\s*[0-9]*',
             'round': r'\s*round\s*=\s*[0-9]*',
-
 
         }
         self.string_params = {
@@ -68,6 +69,12 @@ class SriptExpressions:
                 elif k == 'lower':
                     self.formated_functions.append(lambda x: x.lower())
                     return True
+                elif k == 'preffix':
+                    value = code_string.replace(' ', '')[1:]
+                    self.formated_functions.append(lambda x: x +value)
+                elif k == 'suffix':
+                    value = code_string.replace(' ', '')[:-1]
+                    self.formated_functions.append(lambda x: value + x )
                 else:
                     x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
                     if x:
@@ -82,7 +89,6 @@ class SriptExpressions:
                 self.formated_params.update({k:x})
                 return True
         return False
-
 
     def __parseCode(self):
         for i in self.code:
@@ -153,7 +159,7 @@ class Mapper:
             return lambda : self.g.datetime.datetime(**kw).strftime(params.get('format', '%c'))
         elif name == 'date':
             kw = {'start':params.get('min',1999),'end':params.get('max',2040)}
-            return lambda :  self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
+            return lambda : self.g.datetime.date(**kw).strftime(params.get('format', '%c'))
         elif name == 'ean_code':
             if params.get('type', 'ean-13')=='ean-13':
                 return lambda : self.g.code.ean(enums.EANFormat.EAN13)
