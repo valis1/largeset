@@ -24,7 +24,7 @@
      <div class='col-8'>
       <article class="card ml-2 mt-2">
          <div class="card-header bg-light m-1">
-          Для генерации тестовых данных заполните форму:
+          Flat data generator. Describe how to generate yout data
           </div>
           <div class="card-body mt-0"> 
             <form>
@@ -131,15 +131,15 @@
                      <div class='col'>
                          <select v-model="file_type" class="form-control form-control-sm" id ="formatselect">
                              <option v-bind:value="'text'">Text</option>
-                             <option v-bind:value="'sql'">SQL</option>
+                             <option v-bind:value="'json'">JSON Array</option>
                         </select>
                      </div>
 
-                     <label for="delimiterinput" >Delimiter :</label>
-                     <div class='col'>
+                     <label v-if= 'file_type=="text"' for="delimiterinput" >Delimiter :</label>
+                     <div class='col' v-if= 'file_type=="text"'>
                          <input type="text"  id="delimiterinput" v-model='delimiter' class='form-control'>
                      </div>
-                     <div class="checkbox pr-3">
+                     <div class="checkbox pr-3" v-if= 'file_type=="text"'>
                         <label style="font-size: 1em">
                             <input type="checkbox" id="headercheck" class = 'big-checkbox' v-model='header'  true-value=true false-value= false>
                             <span class="cr"><i class="cr-icon fa fa-check"></i></span>

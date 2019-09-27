@@ -235,7 +235,7 @@ class Request:
                         self.nulls += 1
                         self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
                         i['null'] = True
-                    elif self.null_method == 1 and bool(i.get('null')):
+                    elif self.null_method == 1 and i.get('null'):
                         self.nulls += 1
                     else:
                         i['null'] = False
