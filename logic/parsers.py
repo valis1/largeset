@@ -140,9 +140,14 @@ class Mapper:
             'ip': self.g.internet.ip_v4,
             'car_model': self.g.transport.car,
             'imei': self.g.code.imei,
-            'phone_model': self.g.hardware.phone_model,
             'boolean':self.g.development.boolean,
-            'operation_system': self.g.development.os
+            'operation_system': self.g.development.os,
+            # Hardware
+            'phone_model': self.g.hardware.phone_model,
+            'cpu': self.g.hardware.cpu,
+            'cpu_codename':self.g.hardware.cpu_codename,
+            'cpu_frequency': self.g.hardware.cpu_frequency,
+            'cpu_generation':self.g.hardware.generation
         }
 
     def get_function(self, name, field_id, params={}):

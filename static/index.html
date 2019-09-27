@@ -15,7 +15,7 @@
       Largeset - Fake data generator
        </span>
        <span class="navbar-text">
-        v. 0.4.3 (alpha)
+        v. 0.4.4 (alpha)
     </span>
     </div>
   </header>
@@ -145,7 +145,11 @@
                             <span class="cr"><i class="cr-icon fa fa-check"></i></span>
                             Add Header
                         </label>
-                    </div>
+                      </div>
+                      <label v-if= 'file_type=="json"' for="delimiterinput" >Delimiter :</label>
+                     <div class='col' v-if= 'file_type=="text"'>
+                         <input type="text"  id="delimiterinput" v-model='delimiter' class='form-control'>
+                     </div>
                      
               </div>
               <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='success_request_allert'>
@@ -160,9 +164,9 @@
         <div class="alert alert-light border-top m-2" role="alert">
              <h4 class="alert-heading">What's new</h4>
              <ul>
-                <li>24.09.2019 - v. 0.4.1 Фиксы интерфейса, новые типы - isbn, imei, choice</li>
                 <li>25.09.2019 - v. 0.4.2 Фиксы интерфейса, новые типы - boolean, phone model, os name</li>
                 <li>26.09.2019 - v. 0.4.3 Красивые чекбоксы, суфиксы и префиксы строковых переменных</li>
+                <li>27.09.2019 - v. 0.4.4 Фикс нулл метода, 4 новых типа данных (по параметрам CPU)</li>
 
              </ul>
         </div>
