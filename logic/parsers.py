@@ -147,7 +147,13 @@ class Mapper:
             'cpu': self.g.hardware.cpu,
             'cpu_codename':self.g.hardware.cpu_codename,
             'cpu_frequency': self.g.hardware.cpu_frequency,
-            'cpu_generation':self.g.hardware.generation
+            'cpu_generation':self.g.hardware.generation,
+            'graphics': self.g.hardware.graphics,
+            'manufacturer': self.g.hardware.manufacturer,
+            'ram_size':self.g.hardware.ram_size,
+            'ram_type': self.g.hardware.ram_type,
+            'resolution':self.g.hardware.resolution,
+            'screen_size':self.g.hardware.screen_size,
         }
 
     def get_function(self, name, field_id, params={}):

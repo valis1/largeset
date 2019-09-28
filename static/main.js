@@ -73,6 +73,7 @@ var app = new Vue({
         request_time: 1,
         file_type: 'text',
         delimiter: ';',
+        json_root: 'data',
         header: true,
         encoding: 'utf-8',
         main_form: {
@@ -127,7 +128,7 @@ var app = new Vue({
         get_data(){
             let xhr = new XMLHttpRequest();
             this.data_processed = true;
-            start_time = new Date().getTime()
+            let start_time = new Date().getTime();
             xhr.open('POST','/service/',true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify(this.main_form));
@@ -142,6 +143,10 @@ var app = new Vue({
                           if (this.file_type == 'text') {
                               blob = to_csv(xhr.responseText, this.header, this.delimiter);
                               file_type='.csv';
+                          }
+                          else if (this.file_type == 'json'){
+                              blob = to_json(xhr.responseText, this.json_root);
+                              file_type = '.json';
                           }
                           if (blob){
                             let link = document.createElement('a');

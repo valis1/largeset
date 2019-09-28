@@ -15,7 +15,7 @@
       Largeset - Fake data generator
        </span>
        <span class="navbar-text">
-        v. 0.4.4 (alpha)
+        v. 0.4.5 (alpha)
     </span>
     </div>
   </header>
@@ -146,9 +146,9 @@
                             Add Header
                         </label>
                       </div>
-                      <label v-if= 'file_type=="json"' for="delimiterinput" >Delimiter :</label>
-                     <div class='col' v-if= 'file_type=="text"'>
-                         <input type="text"  id="delimiterinput" v-model='delimiter' class='form-control'>
+                      <label v-if= 'file_type=="json"' for="delimiterinput" >Root Element :</label>
+                     <div class='col' v-if= 'file_type=="json"'>
+                         <input type="text"  id="delimiterinput" v-model='json_root' class='form-control'>
                      </div>
                      
               </div>
@@ -164,9 +164,9 @@
         <div class="alert alert-light border-top m-2" role="alert">
              <h4 class="alert-heading">What's new</h4>
              <ul>
-                <li>25.09.2019 - v. 0.4.2 Фиксы интерфейса, новые типы - boolean, phone model, os name</li>
                 <li>26.09.2019 - v. 0.4.3 Красивые чекбоксы, суфиксы и префиксы строковых переменных</li>
                 <li>27.09.2019 - v. 0.4.4 Фикс нулл метода, 4 новых типа данных (по параметрам CPU)</li>
+                <li>28.09.2019 - v. 0.4.5 Фиксы ui, экспорт в  JSON, новые типы данных</li>
 
              </ul>
         </div>
@@ -273,13 +273,10 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container p-1 large-modal">
-          <div class="modal-header">
-            <slot name="header">
-              <div class='container'>
-              <nav id="navbar-example2" class="navbar navbar-expand-lg alert-success row ml-2 mr-2">
+              <nav  class="navbar alert-success ml-4 mr-4 mt-2 ">
                   <span class="navbar-brand col m-2" >Choise field type</span>
                   <div class="input-group col">
-                      <input type="text" class=" form-control"  size ='30' v-on:input="$emit('sort',$event.target.value)">
+                      <input type="text" class=" form-control"   v-on:input="$emit('sort',$event.target.value)">
                               <div class="input-group-prepend">
                                   <div class="input-group-text">
                                   <i class="fas fa-search"></i>
@@ -287,12 +284,8 @@
                               </div>
                   </div>
               </nav>
-              </div>
-            </slot>
-          </div>
 
           <div class="modal-body m-1 ">
-            <slot name="body">
               <div class ='container-fluid' >
               <div class = 'row' v-for='row in items'>
                   <div class = 'col-3 p-1' v-for = 'col in row'> 
@@ -305,14 +298,11 @@
                   </div>
               </div>
               </div>
-            </slot>
           </div>
           <div class="modal-footer ">
-            <slot name="footer">
-              <button class="modal-default-button" @click="$emit('close')">
+              <button class="btn btn-primary" @click="$emit('close')">
                 Close
               </button>
-            </slot>
           </div>
         </div>
       </div>
@@ -326,10 +316,8 @@
       <div class="modal-wrapper">
         <div class="modal-container p-1 small-modal">
           <div class="modal-header p-1 bg-light'">
-            <slot name="header">
               <span class = ' m-1 p-0'>Script Editor <p class='m-0'><small>Drag&Drop functions to the texarea!<span class="badge badge-secondary">New</span></small></span>
               <button type="button" class="btn btn-white m-1 pull-right" @click="close"> <i class="fas fa-lg fa-check"></i></button>
-            </slot>
           </div>
           <div class="modal-body pt-0 ">
               <ul class="nav">

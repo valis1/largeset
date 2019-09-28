@@ -18,3 +18,15 @@ function to_csv(json_data, header, delimiter) {
     const blob = new Blob([result_string], {type: 'text/csv; charset=utf-8'});
     return blob;
 }
+
+function to_json(json_data, root_element) {
+    let result_object ={};
+    let data = JSON.parse(json_data);
+    if (root_element.length > 0) {
+        result_object[root_element] = data.data;
+    }
+    else {
+        result_object = data.data;
+    }
+    return new Blob([JSON.stringify(result_object)], {type: 'application/json; charset=utf-8'}); 
+}

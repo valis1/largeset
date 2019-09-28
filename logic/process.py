@@ -25,6 +25,8 @@ def get_range(num, qty):
             res.update({i:qty_per_combination})
     return res
 
+
+
 def get_optimized_range(percents):
     combinations = list(itertools.product([1,0], repeat=len(percents)))
     combinations = list(filter(lambda x: sum(x)!=0,combinations))
