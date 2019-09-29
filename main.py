@@ -88,6 +88,7 @@ if os.getenv('PROD'):
     cherrypy.engine.start()
     m = LargeSetUI()
     m.service = LargeSetService()
+    m.coin = CoinPrice()
     app = cherrypy.tree.mount(m, '/', conf)
     app.service = LargeSetService()
 else:
