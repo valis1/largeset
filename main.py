@@ -4,6 +4,7 @@ import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, get_optimized_range, generate_matrix
 from storage.dbclient import get_field_types
+from exps.crypto_price import get_price
 
 
 class LargeSetUI(object):
@@ -15,6 +16,18 @@ class LargeSetUI(object):
     def fields(self):
         res = get_field_types()
         return json.dumps(res)
+
+@cherrypy.expose
+class CoinPrice:
+    def GET(self):
+        coin_name = cherrypy.request.headers.get('coin')
+        if coin_name:
+            price = get_price(coin_name)
+            if price:
+                return json.dumps({'fulfillmentText':'Текущая цена %s : %s'%(coin_name, price)}, ensure_ascii=False)
+            else:
+                return json.dumps({'fulfillmentText':'Что-то пошло не так'}, ensure_ascii=False)
+
 
 @cherrypy.expose
 class LargeSetService:
@@ -58,6 +71,9 @@ conf = {
         '/service': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
         },
+        '/coin': {
+            'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+        },
         'global': {
             'engine.autoreload.on': False
         },
@@ -77,5 +93,6 @@ if os.getenv('PROD'):
 else:
     app = LargeSetUI()
     app.service = LargeSetService()
+    app.coin = CoinPrice()
     cherrypy.quickstart(app, '/', conf)
 

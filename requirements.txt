@@ -3,3 +3,4 @@ mimesis
 cherrypy
 gunicorn
 pymongo
+requests
