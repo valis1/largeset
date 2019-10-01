@@ -6,18 +6,12 @@ import re
 import random
 import ast
 
-
 class SriptExpressions:
 
     def __init__(self, codestring):
-        #ToDo Upper and Lower  functions
+        self.warns = []
         self.function_patterns = {
-            'lambda x: x*%s': r'\s*lambda x\s*:\s*(x|[0-9]+)\s*\*{1}\s*[0-9]+|x',
-            'lambda x: x/%s': r'\s*lambda x\s*:\s*x\s*/\s*[0-9]+',
-            'lambda x:%s/x': r'\s*lambda x\s*:\s*[0-9]+\s*/\s*x',
-            'lambda x: x+%s': r'\s*lambda x\s*:\s*x|[0-9]+\s*\+\s*[0-9]+|x',
-            'lambda x:x-%s': r'\s*lambda x\s*:\s*x\s*-\s*[0-9]+',
-            'lambda x:%s-x': r'\s*lambda x\s*:\s*[0-9]+\s*-\s*x',
+            'lambda': r'^\s*lambda',
             'upper': r'\s*upper\(\s*x\s*\)',
             'lower': r'\s*lower\(\s*x\s*\)',
             'preffix': r'^\+',
@@ -75,11 +69,16 @@ class SriptExpressions:
                 elif k == 'suffix':
                     value = code_string.replace(' ', '')[:-1]
                     self.formated_functions.append(lambda x: value + x )
-                else:
-                    x = re.search(r'([0-9]+\.[0-9]+)|([0-9]+)', code_string)
-                    if x:
-                        self.formated_functions.append(eval(k%x.group(0)))
-                        return True
+                    return True
+                elif k == 'lambda':
+                    try:
+                        if self.__lambdavalidator(code_string):
+                            func = eval(code_string)
+                            self.formated_functions.append(func)
+                        else:
+                            self.warns.append({'not allowed function': code_string})
+                    except SyntaxError:
+                        self.warns.append({'invalid_syntax':code_string})
         return False
 
     def __get_string_params(self, code_string):
@@ -90,15 +89,30 @@ class SriptExpressions:
                 return True
         return False
 
+    @staticmethod
+    def __lambdavalidator(x):
+        if x.find('while')!= -1:
+            return False
+        elif x.find('for')!= -1:
+            return False
+        elif x.find('if')!=-1:
+            return False
+        elif len(x) > 60:
+            return False
+        else:
+            return True
+
+
     def __parseCode(self):
         for i in self.code:
-
             if self.__get_num_params(i):
                 continue
             elif self.__get_string_params(i):
                 continue
             elif self.__get_functions(i):
                 continue
+            else:
+                self.warns.append({'function not found': i})
 
     @property
     def params(self):

@@ -48,6 +48,7 @@ def get_optimized_range(percents):
 
 def generate_matrix(nulls, fields, qty):
     res = []
+    warns = []
     null_schema_iterator = None
     if nulls:
         nulls_iterator = iter(nulls.keys())
@@ -88,11 +89,14 @@ def generate_matrix(nulls, fields, qty):
                 val=fnc()
             #ToDo Do not mutate if result is not numeric or date
                 for i in field['mutations']:
-                    val = i(val)
+                    try:
+                         val = i(val)
+                    except TypeError as e:
+                        warns.append({'function execution error': str(e)})
                 row.update({field['id']:val})
         l_count+=1
         res.append(row)
-    return res
+    return res #To-Do Return warns
 
 
 
