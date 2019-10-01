@@ -1,31 +1,34 @@
 import itertools
-import operator
 import numpy as np
 
-# Итертулс имеет ограничения по памяти. Думаю ограничить 20 необязательными полями на интерфейсе
+"""
+Takes quantity of null fields (num) and quantity of generated rows.
+Returns the dict object where:
+                            key - combination set (1 - null, 0 - not null)  
+                            value - integer value. Times of usage this combination  
+>>> get_range(2,3)
+{(1, 1): 1, (1, 0): 1, (0, 1): 1}
+
+"""
 def get_range(num, qty):
-    # Обрабатываем одно нуловое поле
+    # If one null field
     if num == 1:
-        return { (1, ): abs(qty/2)}
-    combinations = list(itertools.product([1,0], repeat=num))
+        return {(1, ): int(qty/2)}
+    combinations = list(itertools.product([1, 0], repeat=num))
     combinations.sort(key=lambda x: sum(x), reverse=True)
 
-    if len(combinations)>qty:
+    if len(combinations) > qty:
         qty_per_combination = 1
-        addition = 0
         combinations = combinations[:qty]
     else:
-       qty_per_combination = int(qty / len(combinations))
-       addition = qty - qty_per_combination * num
+        qty_per_combination = int(qty / len(combinations))
     res = {}
     for i in combinations:
         if res.get(i,False):
             res[i] += qty_per_combination
         else:
-            res.update({i:qty_per_combination})
+            res.update({i: qty_per_combination})
     return res
-
-
 
 def get_optimized_range(percents):
     combinations = list(itertools.product([1,0], repeat=len(percents)))
