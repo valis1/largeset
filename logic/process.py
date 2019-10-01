@@ -2,10 +2,11 @@ import itertools
 import numpy as np
 
 """
-Takes quantity of null fields (num) and quantity of generated rows.
+
+Takes quantity of null fields (num) and quantity of generated rows for the COMBINATION OPTIMIZED null method.
 Returns the dict object where:
-                            key - combination set (1 - null, 0 - not null)  
-                            value - integer value. Times of usage this combination  
+                            key - combination set (1 - null, 0 - not null);
+                            value - integer value. Times of usage this combination;
 >>> get_range(2,3)
 {(1, 1): 1, (1, 0): 1, (0, 1): 1}
 
