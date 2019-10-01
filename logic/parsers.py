@@ -5,6 +5,7 @@ import uuid
 import re
 import random
 import ast
+from math import sin, cos, tan, sqrt
 
 class SriptExpressions:
 
