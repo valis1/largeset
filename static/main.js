@@ -5,6 +5,7 @@ String.prototype.replaceAll = function(search, replace){
 Vue.component('modal', {
     template: '#modal-template',
     props: ['items'],
+    //To-do refactoring 
         
     });
 
@@ -23,6 +24,8 @@ Vue.component('scriptmodal', {
             }
         }
     },
+
+
     methods: {
         close: function(){
             this.$emit('close', this.$refs.edited_text.value)
@@ -61,6 +64,7 @@ Vue.component('scriptmodal', {
     
 });
 
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -76,6 +80,7 @@ var app = new Vue({
         json_root: 'data',
         header: true,
         encoding: 'utf-8',
+        table_name:'MY_TABLE',
         main_form: {
             null_method: 'percent_optimized',
             language: 'ru',
@@ -147,6 +152,12 @@ var app = new Vue({
                           else if (this.file_type == 'json'){
                               blob = to_json(xhr.responseText, this.json_root);
                               file_type = '.json';
+                          }
+                          else if (this.file_type == 'dbunit'){
+                              blob = to_dbunit(xhr.responseText, this.table_name);
+                              file_type = '.xml'
+                             
+
                           }
                           if (blob){
                             let link = document.createElement('a');
