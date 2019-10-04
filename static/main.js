@@ -5,8 +5,42 @@ String.prototype.replaceAll = function(search, replace){
 Vue.component('modal', {
     template: '#modal-template',
     props: ['items'],
-    //To-do refactoring 
-        
+    data: function(){
+        return {
+            filtered_items:[]
+        }
+    },
+    computed: {
+        distributed_items: function(){
+            let result = [[]];
+            let this_items = this.items;
+            if (this.filtered_items.length > 0) {
+                this_items = this.filtered_items;
+            }
+            let cnt = 0;
+            let res_index = 0;
+            for (let item of this_items) {
+                if (cnt == 4) {
+                    cnt = 0;
+                    result.push([]);
+                    res_index++;
+                }
+                result[res_index].push(item);
+                cnt++;
+            }
+            return result;
+        },
+    },
+    methods: {
+        filter_event(text){
+            if (text.length > 0) {
+                this.filtered_items = this.items.filter(item => item.desc.toLowerCase().indexOf(text.toLowerCase())!=-1);
+            }
+            else {
+                this.filtered_items= [];
+            }
+        },
+    }  
     });
 
 Vue.component('scriptmodal', {
@@ -100,14 +134,6 @@ var app = new Vue({
         del_row(index){
             this.main_form.fields.splice(index,1);
         },
-        filter_event(text){
-            if (text.length > 0) {
-                this.filtered_items = this.items.filter(item => item.desc.toLowerCase().indexOf(text.toLowerCase())!=-1);
-            }
-            else {
-                this.filtered_items= [];
-            }
-        },
         modal_event(model){
             this.current_editable_model = model;
             this.showModal = true;
@@ -184,32 +210,8 @@ var app = new Vue({
                     this.items = [{'id': 'noData', 'desc': 'No Data', 'example': 'Something got wrond', 'script': '', 'resolved_functions':[]},]
                   } else {
                 this.items = JSON.parse(xhr.responseText);
-        }
-    }
-    
-}
-},
-    computed: {
-        sorted_items: function(){
-            let result = [[]];
-            let this_items = this.items;
-            if (this.filtered_items.length > 0) {
-                this_items = this.filtered_items;
-            }
-            let cnt = 0;
-            let res_index = 0;
-            for (let item of this_items) {
-                if (cnt == 4) {
-                    cnt = 0;
-                    result.push([]);
-                    res_index++;
                 }
-                result[res_index].push(item);
-                cnt++;
-            }
-            return result;
-        },
-
-    }
-}
-);
+            }   
+       }
+    },
+});

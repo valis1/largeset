@@ -228,7 +228,7 @@
   </div>
 </div>
 
-<modal v-if="showModal" @close="showModal = false" v-bind:items='sorted_items' v-on:sort ='filter_event' v-on:on_select='type_select_event'></modal>
+<modal v-if="showModal" @close="showModal = false" v-bind:items='items'  v-on:on_select='type_select_event'></modal>
 <scriptmodal v-if='showScriptModal' @close='close_scrypt_modal' v-bind:editable='current_editable_model' v-bind:items='items'></scriptmodal>
 </main>
 <footer class='text-center p-1'>
@@ -244,7 +244,7 @@
               <nav  class="navbar alert-success ml-4 mr-4 mt-2 ">
                   <span class="navbar-brand col m-2" >Choise field type</span>
                   <div class="input-group col">
-                      <input type="text" class=" form-control"   v-on:input="$emit('sort',$event.target.value)">
+                      <input type="text" class=" form-control"  @input="filter_event($event.target.value)">
                               <div class="input-group-prepend">
                                   <div class="input-group-text">
                                   <i class="fas fa-search"></i>
@@ -255,7 +255,7 @@
 
           <div class="modal-body m-1 ">
               <div class ='container-fluid' >
-              <div class = 'row' v-for='row in items'>
+              <div class = 'row' v-for='row in distributed_items'>
                   <div class = 'col-3 p-1' v-for = 'col in row'> 
                       <div class="card m-1 bg-light" @click="$emit('on_select', col.id, col.script)">
                           <div class="card-body p-2 m-1">

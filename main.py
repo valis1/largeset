@@ -3,8 +3,9 @@ import os
 import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, generate_matrix
-from adaptors.dbclient import get_field_types
+from adaptors.dbclient import DbClient
 
+CLIENT = DbClient()
 
 class LargeSetUI(object):
     @cherrypy.expose
@@ -13,7 +14,7 @@ class LargeSetUI(object):
 
     @cherrypy.expose
     def fields(self):
-        res = get_field_types()
+        res = CLIENT.fields
         return json.dumps(res)
 
 @cherrypy.expose
