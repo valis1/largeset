@@ -3,7 +3,7 @@ import os
 import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, generate_matrix
-from storage.dbclient import get_field_types
+from adaptors.dbclient import get_field_types
 
 
 class LargeSetUI(object):
