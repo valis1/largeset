@@ -8,7 +8,6 @@ import ast
 from math import sin, cos, tan, sqrt
 
 class SriptExpressions:
-
     def __init__(self, codestring):
         self.warns = []
         self.function_patterns = {
@@ -234,22 +233,12 @@ class ParsingError(Exception):
 
 class Request:
     def __init__(self, request):
-        null_methods = {
-            'percent_optimized': 0,
-            'combination_optimized': 1
-        }
         try:
             self.data = json.loads(request)
         except json.decoder.JSONDecodeError:
             raise ParsingError('Unsupported json format')
 
-        try:
-            self.null_method = null_methods[self.data['null_method']]
-        except KeyError:
-            raise ParsingError('null method must be in (percent_optimized, combination_optimized) ')
-
         self.nulls = 0
-        self.percent_nulls = []
 
         try:
             self.language = self.data['language']
@@ -257,11 +246,7 @@ class Request:
             self.fields = []
             for i in self.data['fields']:
                 if i.get('id') and i.get('type'):
-                    if int(i.get('percent_nulls', 0)) >0 and self.null_method==0:
-                        self.nulls += 1
-                        self.percent_nulls.append((self.len/100)*int(i['percent_nulls']))
-                        i['null'] = True
-                    elif self.null_method == 1 and i.get('null'):
+                    if i.get('null'):
                         self.nulls += 1
                     else:
                         i['null'] = False

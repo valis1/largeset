@@ -82,7 +82,6 @@ var app = new Vue({
         encoding: 'utf-8',
         table_name:'MY_TABLE',
         main_form: {
-            null_method: 'percent_optimized',
             language: 'ru',
             data_len: 10,
             fields: [

@@ -11,6 +11,8 @@ Returns the dict object where:
 {(1, 1): 1, (1, 0): 1, (0, 1): 1}
 
 """
+
+
 def get_range(num, qty):
     # If one null field
     if num == 1:
@@ -31,24 +33,7 @@ def get_range(num, qty):
             res.update({i: qty_per_combination})
     return res
 
-def get_optimized_range(percents):
-    combinations = list(itertools.product([1,0], repeat=len(percents)))
-    combinations = list(filter(lambda x: sum(x)!=0,combinations))
-    combinations.sort(key= lambda x: sum(x), reverse=True)
-    res ={}
-    percents = np.array(percents)
-    combinations = np.array(combinations)
-    while np.sum(percents)!=0:
-        for i in combinations:
-            r = percents - i
-            if len(r[r<0])==0:
-                percents = r
-                k = tuple(i)
-                if res.get(k,False):
-                    res[k]+=1
-                else:
-                    res.update({k:1})
-    return res
+
 
 def generate_matrix(nulls, fields, qty):
     res = []

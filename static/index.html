@@ -28,14 +28,7 @@
           </div>
           <div class="card-body mt-0"> 
             <form>
-              <div class = "row">
-                  <div class ="col">
-                      <select v-model="main_form.null_method" class="form-control">
-                         <option v-bind:value="'percent_optimized'">Заполнять нулами указанный % полей (покрывая все возможные комбинации)</option>
-                         <option v-bind:value="'combination_optimized'">Покрыть Is Null поля максимальным множеством комбинаций (быстрее)</option>
-                      </select>
-                  </div>
-              </div>
+              
 
               <div class = "row">
                  <table class="table mt-1">
@@ -44,8 +37,7 @@
                              <th scope="col">Field Name</th>
                              <th scope="col">Field Type</th>
                              <th scope="col">
-                                 <span v-show="main_form.null_method=='percent_optimized'">% of Nulls</span>
-                                 <span v-show="main_form.null_method=='combination_optimized'">Is Null</span>
+                                 <span >Is Null</span>
                              </th>
                          <th scope="col">Custom Script</th>
                          </tr>
@@ -70,9 +62,7 @@
                           </td>
 
                           <td>
-                              <input v-show="main_form.null_method=='percent_optimized'"
-                              type='number' v-model='field.percent_nulls' class=" form-control">
-                              <div class="checkbox" v-show="main_form.null_method=='combination_optimized'">
+                              <div class="checkbox" >
                                 <label style="font-size: 1.3em">
                                     <input true-value=true false-value= false type='checkbox'  v-model='field.null'>
                                     <span class="cr"><i class="cr-icon fa fa-check"></i></span>
@@ -180,34 +170,6 @@
         <div class="alert alert-success m-2" role="alert">
   <h4 class="alert-heading">FAQ</h4>
      <p>Описание тестовых данных задается в основной форме. Где:</p>
-      <a  data-toggle="collapse" href="#collapse0"
-      role="button" aria-expanded="false" aria-controls="collapse0">
-      Метод заполнения нулами <i class="fas fa-sort-down"></i>
-     </a>
-     <div class="collapse" id="collapse0">
-     <ul>
-         <li>Определяет как во множестве генерируемых данных будут проставлены null значения</li>
-         <li> Значение null проставляется только если поле может быть null</li>
-         <li> Если полей несколько то оба метода пытаются подобрать оптимальное число null/not null комбинаций</li>
-         <li> Метод <strong> Заполнять нулами % полей</strong>
-           <ul>
-              <li>Поле может быть null только если значение "% of nulls" > 0</li>
-              <li> Сначала генерируются все возможные варианты комбинаций null/not null</li>
-              <li> После согласно "весу" для комбинации подбирается количество полей, которое может быть заполнено согласно указанной процентной доли</li>
-              <li> Чем больше нулов в комбинации тем выше ее вес</li>
-              <li> Метод тяжелый и не рекомендуем для большого количества  полей, по которым возможен null</li>
-           </ul>
-         </li>
-         <li> Метод <strong>Покрыть is null поля максимальным количеством комбинаций</strong>
-            <ul>
-              <li> Поле считается null если установлена галочка is null</li>
-              <li> Если полей is null несколько генерируются все возможные комбинации null/not null</li>
-              <li> При генерации данных покрываются все либо максимальное количество комбинаций </li>
-            </ul>
-
-
-     </ul>
-     </div>
      <p>
      <a  data-toggle="collapse" href="#collapse1"
       role="button" aria-expanded="false" aria-controls="collapse1">
