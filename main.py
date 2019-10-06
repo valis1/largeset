@@ -3,11 +3,11 @@ import os
 import json
 from logic.parsers import SriptExpressions, Mapper, Request, ParsingError
 from logic.process import get_range, generate_matrix
-from adaptors.dbclient import DbClient
+from adaptors.dbclient import DbClient, ClientError
 
 CLIENT = DbClient()
 
-class LargeSetUI(object):
+class LargeSetUI:
     @cherrypy.expose
     def index(self):
         return open('static/index.html', encoding='utf-8')
@@ -16,6 +16,42 @@ class LargeSetUI(object):
     def fields(self):
         res = CLIENT.fields
         return json.dumps(res)
+
+@cherrypy.expose
+class Schemas:
+    def GET(self, schema_id):
+        try:
+            res = CLIENT.get_schema(schema_id)
+            return json.dumps(res)
+        except ClientError as e:
+            cherrypy.response.status = 400
+            return json.dumps({'error':str(e)})
+
+    def POST(self):
+        data  = cherrypy.request.body.read(int(cherrypy.request.headers['Content-Length']))
+        try:
+            res = CLIENT.insertSchema(json.loads(data))
+            return json.dumps({'schema_id':res})
+        except json.decoder.JSONDecodeError as e:
+            cherrypy.response.status = 400
+            return json.dumps({'error': 'bad schema json'})
+        except ClientError as e:
+            cherrypy.response.status = 400
+            return json.dumps({'error': str(e)})
+
+    def PUT(self,schema_id):
+        data = cherrypy.request.body.read(int(cherrypy.request.headers['Content-Length']))
+        try:
+            msg = CLIENT.updateSchema(json.loads(data),schema_id)
+            return json.dumps({"message": msg})
+        except json.decoder.JSONDecodeError as e:
+            cherrypy.response.status = 400
+            return json.dumps({'error': 'bad schema json'})
+        except ClientError as e:
+            cherrypy.response.status = 400
+            return json.dumps({'error': str(e)})
+
+
 
 @cherrypy.expose
 class LargeSetService:
@@ -57,6 +93,9 @@ conf = {
         '/service': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
         },
+         '/schemas': {
+            'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+        },
 
         'global': {
             'engine.autoreload.on': False
@@ -72,10 +111,12 @@ if os.getenv('PROD'):
     cherrypy.engine.start()
     m = LargeSetUI()
     m.service = LargeSetService()
+    m.schemas = Schemas()
     app = cherrypy.tree.mount(m, '/', conf)
     app.service = LargeSetService()
 else:
     app = LargeSetUI()
     app.service = LargeSetService()
+    app.schemas = Schemas()
     cherrypy.quickstart(app, '/', conf)
 
