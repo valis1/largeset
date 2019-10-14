@@ -147,13 +147,20 @@
                      </div>
                      
               </div>
-              <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='success_request_allert'>
-               Данные успещно сгенерированы. Время ответа: {{request_time}} ms
+              <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='success_request_allert' >
+                {{allert_text}}
                 <button type="button" class="close" @click='close_allert'>
                    <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-              <button type="button" class="btn btn-primary btn-lg btn-block ml-1 mt-4" v-on:click='get_data()'>Process Data</button>
+              </div>
+              <button type="button" class="btn btn btn-success btn-lg  ml-1 mt-4" @click='showSchemaDialog = true'>
+                Save/Load schema
+                <i class="far fa-save"></i>
+              </button>
+              <button type="button" class="btn btn-primary btn-lg  ml-1 mt-4" v-on:click='get_data()'>
+                  Download Data 
+                  <i class="fas fa-download"></i>
+                </button>
             </form>
         </article> 
         <div class="alert alert-light border-top m-2" role="alert">
@@ -230,6 +237,7 @@
 
 <modal v-if="showModal" @close="showModal = false" v-bind:items='items'  v-on:on_select='type_select_event'></modal>
 <scriptmodal v-if='showScriptModal' @close='close_scrypt_modal' v-bind:editable='current_editable_model' v-bind:items='items'></scriptmodal>
+<schema-modal v-if = "showSchemaDialog" v-bind:model ="main_form" v-bind:id_of_schema="schema_id" @close = 'close_dialog_and_get_model'></schema-modal>
 </main>
 <footer class='text-center p-1'>
 <div class="alert alert-success" role="alert">
@@ -301,6 +309,55 @@
   </transition>
 </script>
 
+<script type="text/x-template" id="load-modal">
+  <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container p-1 dialog-modal">
+            <div class="modal-header p-1 bg-light'">
+                <span class = ' ml-2 mt-1 p-0'>Save/Get schema</span>
+                <button type="button"
+                        class="btn btn-white m-1 pull-right"
+                        @click="$emit('close', schema, schema_id)"> 
+                    <i class="far fa-times-circle"></i>
+                </button>
+            </div>
+          <div class="modal-body pt-0 ">
+            <form>
+                <div class="form-group">
+                    <label for="schema-id-input">My Schema ID</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="schema-id-input" ref = 'schema_id_input' v-model = 'schema_id'>
+                        <div class="input-group-append">
+                          <span class="input-group-text" id="basic-addon1" @click='copy_to_clipboard'><i class="fas fa-copy"></i></span>
+                        </div>
+                    </div>
+                    <small id="schema-id-help" class="form-text text-muted">Enter schema id (
+                        will be shown if already saved in this session)</small>
+                  </div>
+                  <div class="form-group text-center">
+                     <button type="button" class="btn btn btn-success   ml-1 " v-on:click='save_schema'>
+                     Save 
+                     <i class="far fa-save"></i>
+                     </button>
+                     <button type="button" class="btn btn btn-success  ml-1 " v-on:click='get_schema'>
+                     Load
+                     <i class="fas fa-upload"></i>
+                   </button>
+                  </div>
+                  <div class="alert alert-info mt-1 alert-dismissible  " role="alert" v-show='show_allert' >
+                      {{allert_text}}
+                      <button type="button" class="close" @click='show_allert=false'>
+                         <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>
+</script>
 <script src='static/main.js'></script>
 <script src='static/adaptors.js'></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

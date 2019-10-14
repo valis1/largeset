@@ -24,7 +24,7 @@ class Schemas:
             res = CLIENT.get_schema(schema_id)
             return json.dumps(res)
         except ClientError as e:
-            cherrypy.response.status = 400
+            cherrypy.response.status = 401
             return json.dumps({'error':str(e)})
 
     def POST(self):
@@ -36,10 +36,10 @@ class Schemas:
             cherrypy.response.status = 400
             return json.dumps({'error': 'bad schema json'})
         except ClientError as e:
-            cherrypy.response.status = 400
+            cherrypy.response.status = 401
             return json.dumps({'error': str(e)})
 
-    def PUT(self,schema_id):
+    def PUT(self, schema_id):
         data = cherrypy.request.body.read(int(cherrypy.request.headers['Content-Length']))
         try:
             msg = CLIENT.updateSchema(json.loads(data),schema_id)
@@ -48,7 +48,7 @@ class Schemas:
             cherrypy.response.status = 400
             return json.dumps({'error': 'bad schema json'})
         except ClientError as e:
-            cherrypy.response.status = 400
+            cherrypy.response.status = 401
             return json.dumps({'error': str(e)})
 
 

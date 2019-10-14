@@ -55,6 +55,12 @@ input[type=text]{
 
  }
 
+ .dialog-modal {
+  width: 370px;
+  height: 330px;
+  
+}
+
  .dragged {
     cursor: move;
     opacity: 0.9;

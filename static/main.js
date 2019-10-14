@@ -58,8 +58,6 @@ Vue.component('scriptmodal', {
             }
         }
     },
-
-
     methods: {
         close: function(){
             this.$emit('close', this.$refs.edited_text.value)
@@ -98,6 +96,105 @@ Vue.component('scriptmodal', {
     
 });
 
+Vue.component("schema-modal",{
+    template:"#load-modal",
+    props: ['model', 'id_of_schema'],
+    data: function() {
+        return {
+            schema_id: '',
+            show_allert: false,
+            allert_text: '',
+            schema: false
+        }
+    },
+    methods: {
+        save_schema(){
+
+            let xhr = new XMLHttpRequest();
+            if (this.schema_id.length == 0){
+                xhr.open("POST", "/schemas/",true);
+                xhr.send(JSON.stringify(this.model));
+                xhr.onreadystatechange =() => {
+                    if(xhr.readyState ==4) {
+                        if (xhr.status != 200) {
+                            this.allert_text = `Schema not saved! Error!`
+                        } else { 
+                             let result = JSON.parse(xhr.responseText);
+                             this.schema_id = result.schema_id;
+                             this.allert_text = `Schema saved!`
+                        }
+                    
+                    }
+                }
+            }
+            else if (this.schema_id.length == 24) {
+                xhr.open("PUT", `/schemas?schema_id=${this.schema_id}`,true);
+                xhr.send(JSON.stringify(this.model));
+                xhr.onreadystatechange =() => {
+                    if(xhr.readyState ==4) {
+                        if (xhr.status == 401) {
+                            this.allert_text = `Schema not found`
+                        }
+                        else if (xhr.status != 200 ) {
+                            this.allert_text = `Server Error`
+                        }
+                        else { 
+                             let result = JSON.parse(xhr.responseText);
+                             this.allert_text = `Schema updated!`
+                             this.show_allert = true;
+                        }
+                    
+                    }
+                }
+
+            }
+            else {
+                this.allert_text = 'Schema ID must be 24 symbols length or empty'
+            }
+            this.show_allert = true;
+        },
+        get_schema(){
+            let xhr = new XMLHttpRequest();
+            if (this.schema_id.length == 24) {
+            xhr.open("GET", `/schemas?schema_id=${this.schema_id}`,true);
+            xhr.send();
+            xhr.onreadystatechange =() => {
+                if(xhr.readyState ==4) {
+                    if (xhr.status == 401) {
+                        this.allert_text = `Schema not found`;
+                      } 
+                    else if (xhr.status != 200) {
+                        this.allert_text = `Server Error`;
+                    }
+                    else { 
+                         let result = JSON.parse(xhr.responseText);
+                         this.schema = result;
+                         this.allert_text = `Schema Loaded!`
+                      }
+                      this.show_allert = true;
+                    
+                }
+            }
+            }
+            else {
+                this.allert_text ='Schema ID must be 24 symbols length';
+                this.show_allert = true;
+            }
+        },
+        copy_to_clipboard() {
+            let input = this.$refs.schema_id_input;
+            input.select();
+            document.execCommand('copy');
+            this.allert_text = "Success copy to clipboard"
+            this.show_allert = true;
+        }
+    },
+    created: function(){
+        if (this.id_of_schema!= '') {
+            this.schema_id = this.id_of_schema;
+        }
+    }
+})
 
 var app = new Vue({
     el: '#app',
@@ -106,15 +203,17 @@ var app = new Vue({
         current_editable_model: {},
         showModal:false,
         showScriptModal:false,
+        showSchemaDialog: false,
         data_processed:false,
         success_request_allert: false,
-        request_time: 1,
+        allert_text:'',
         file_type: 'text',
         delimiter: ';',
         json_root: 'data',
         header: true,
         encoding: 'utf-8',
         table_name:'MY_TABLE',
+        schema_id: '',
         main_form: {
             language: 'ru',
             data_len: 10,
@@ -155,6 +254,18 @@ var app = new Vue({
             this.showModal = false;
             this.filtered_items = [];
         },
+        close_dialog_and_get_model(model, id){
+            if (model) {
+            if (id != this.schema_id) {
+                this.main_form = model;
+                this.schema_id = id;
+                this.allert_text = "Schema loaded!";
+                this.success_request_allert = true;
+            }
+        }
+        this.showSchemaDialog =false;
+        this.schema_id = id;
+        },
         get_data(){
             let xhr = new XMLHttpRequest();
             this.data_processed = true;
@@ -188,7 +299,8 @@ var app = new Vue({
                             let link = document.createElement('a');
                             link.href  = window.URL.createObjectURL(blob);
                             link.download = 'results' + file_type
-                            this.request_time = new Date().getTime() - start_time
+                            let request_time = new Date().getTime() - start_time
+                            this.allert_text = `Success! Data generated at time: ${request_time} ms`
                             this.success_request_allert = true;
                             link.click();
                           }
